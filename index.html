@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen1th | 沉浸式英语学习</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050505; color: white; overflow: hidden; }
+        .glow {
+            position: absolute;
+            width: 80vw; height: 80vw;
+            background: radial-gradient(circle, rgba(64, 92, 255, 0.1) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen">
+    <div class="glow top-[-20%] right-[-10%]"></div>
+    <div class="glow bottom-[-20%] left-[-10%]"></div>
+
+    <div class="z-10 text-center px-6">
+        <h1 class="text-6xl font-extralight tracking-[0.3em] mb-4 opacity-90">ZEN1TH</h1>
+        <p class="text-xs tracking-[0.5em] text-blue-400/60 uppercase mb-12">Cinematic English</p>
+        <h2 class="text-xl font-light tracking-widest text-white/70 mb-16">在沉浸与游戏中重新认识英语</h2>
+        
+        <div class="flex flex-col gap-4 items-center">
+            <button class="w-64 py-4 rounded-full bg-white text-black font-medium active:scale-95 transition-transform">
+                开始学习
+            </button>
+            <button class="w-64 py-4 rounded-full glass text-white/60 active:scale-95 transition-transform">
+                今日挑战
+            </button>
+        </div>
+    </div>
+</body>
+</html>
