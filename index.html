@@ -15,30 +15,37 @@
         .shake { animation: shake 0.3s ease-in-out; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
+<body class="min-h-screen flex flex-col items-center justify-between py-12 px-6">
     <div class="fixed top-[-10%] right-[-10%] w-[80vw] h-[80vw] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
-    
-    <section id="view-hero" class="z-10 text-center">
+
+    <section id="view-hero" class="z-10 flex flex-col items-center justify-center flex-grow text-center w-full">
         <h1 class="text-6xl font-extralight tracking-[0.4em] mb-4">ZEN1TH</h1>
         <p class="text-[10px] tracking-[0.8em] text-blue-400/40 uppercase mb-24">Unlock Your World</p>
         <button onclick="switchView('view-levels')" class="px-16 py-4 rounded-full bg-white text-black font-medium active:scale-95 transition-all">进入系统</button>
+        
+        <div class="mt-32 opacity-30 hover:opacity-100 transition-opacity duration-500">
+            <p class="text-[10px] tracking-[0.3em] mb-2 uppercase italic">你的回响，是巅峰的基石</p>
+            <a href="mailto:wjszzh888@163.com" class="text-[11px] font-light border-b border-white/20 pb-1">wjszzh888@163.com</a>
+        </div>
     </section>
 
-    <section id="view-levels" class="hidden z-10 w-full max-w-md">
-        <h2 class="text-xl font-light tracking-widest mb-12 text-center text-white/60">选择同步维度</h2>
-        <div class="grid grid-cols-1 gap-4">
+    <section id="view-levels" class="hidden z-10 w-full max-w-md pt-10">
+        <h2 class="text-xl font-light tracking-widest mb-12 text-center text-white/60 uppercase">同步维度</h2>
+        <div class="grid grid-cols-1 gap-4 overflow-y-auto max-h-[60vh] pr-2">
             <div onclick="initGame('Origins')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div>
-                    <h3 class="text-lg font-medium">Origins</h3>
-                    <p class="text-xs text-white/30 italic">基础意识同步</p>
-                </div>
+                <div><h3 class="text-lg font-medium">Origins</h3><p class="text-xs text-white/30 italic">基础意识同步</p></div>
                 <span class="text-blue-500">→</span>
             </div>
-            <div onclick="initGame('Manhattan')" class="glass p-8 rounded-3xl flex justify-between items-center opacity-50">
-                <div>
-                    <h3 class="text-lg font-medium">Manhattan</h3>
-                    <p class="text-xs text-white/30 italic">钢铁森林 (锁定)</p>
-                </div>
+            <div onclick="initGame('Manhattan')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
+                <div><h3 class="text-lg font-medium">Manhattan</h3><p class="text-xs text-white/30 italic">钢铁森林的意志</p></div>
+                <span class="text-blue-500">→</span>
+            </div>
+            <div onclick="initGame('Queenstown')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
+                <div><h3 class="text-lg font-medium">Queenstown</h3><p class="text-xs text-white/30 italic">纯净荒野的召唤</p></div>
+                <span class="text-blue-500">→</span>
+            </div>
+             <div class="glass p-8 rounded-3xl flex justify-between items-center opacity-40">
+                <div><h3 class="text-lg font-medium">Silicon Valley</h3><p class="text-xs text-white/30 italic">数字脉冲 (锁定)</p></div>
                 <span>🔒</span>
             </div>
         </div>
@@ -47,20 +54,32 @@
 
     <section id="view-game" class="hidden z-10 w-full max-w-md">
         <div class="flex justify-between items-center mb-12 px-2">
-            <div id="game-title" class="text-xs tracking-widest text-blue-400/60 uppercase">Level: Origins</div>
-            <div class="text-[10px] text-white/20 uppercase">Progress <span id="progress-text">0</span>%</div>
+            <div id="game-title" class="text-xs tracking-widest text-blue-400/60 uppercase">Syncing...</div>
+            <div class="text-[10px] text-white/20 uppercase">Sync <span id="progress-text">0</span>%</div>
         </div>
-        <div id="game-grid" class="grid grid-cols-2 gap-4">
-            </div>
+        <div id="game-grid" class="grid grid-cols-2 gap-4"></div>
     </section>
 
     <script>
+        // 扩展词库：你可以随时在这里增加单词
         const database = {
             'Origins': [
-                { en: 'Ethereal', cn: '空灵的' },
-                { en: 'Zenith', cn: '顶点' },
-                { en: 'Cinematic', cn: '电影感的' },
-                { en: 'Vision', cn: '愿景/视野' }
+                { en: 'Zenith', cn: '顶点/巅峰' },
+                { en: 'Ethereal', cn: '优雅空灵的' },
+                { en: 'Perspective', cn: '视角/观点' },
+                { en: 'Manifesto', cn: '宣言' }
+            ],
+            'Manhattan': [
+                { en: 'Skyscraper', cn: '摩天大楼' },
+                { en: 'Metropolis', cn: '大都市' },
+                { en: 'Ambition', cn: '野心/抱负' },
+                { en: 'Hustle', cn: '忙碌/拼搏' }
+            ],
+            'Queenstown': [
+                { en: 'Wilderness', cn: '荒野/自然' },
+                { en: 'Serene', cn: '宁静的' },
+                { en: 'Adrenaline', cn: '肾上腺素' },
+                { en: 'Landscape', cn: '景观/风景' }
             ]
         };
 
@@ -75,7 +94,6 @@
         function initGame(levelId) {
             const words = database[levelId];
             if (!words) return;
-            
             switchView('view-game');
             document.getElementById('game-title').innerText = `Syncing: ${levelId}`;
             const grid = document.getElementById('game-grid');
@@ -92,7 +110,7 @@
 
             cards.forEach(card => {
                 const div = document.createElement('div');
-                div.className = 'glass p-6 rounded-2xl text-center text-sm font-light min-h-[90px] flex items-center justify-center transition-all';
+                div.className = 'glass p-6 rounded-2xl text-center text-xs font-light min-h-[100px] flex items-center justify-center transition-all';
                 div.innerText = card.text;
                 div.dataset.id = card.id;
                 div.onclick = () => handleTap(div, words.length);
@@ -102,7 +120,6 @@
 
         function handleTap(el, total) {
             if (selected.length === 2 || el.classList.contains('card-active')) return;
-
             el.classList.add('card-active');
             selected.push(el);
 
@@ -114,8 +131,7 @@
                         matches++;
                         updateProgress(total);
                         if (matches === total) {
-                            alert('同步成功：你的视野已扩展');
-                            switchView('view-levels');
+                            setTimeout(() => { switchView('view-levels'); }, 800);
                         }
                     }, 400);
                 } else {
