@@ -2,42 +2,139 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zen1th | 沉浸式英语学习</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zen1th | Cinematic Learning</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #050505; color: white; overflow: hidden; }
-        .glow {
-            position: absolute;
-            width: 80vw; height: 80vw;
-            background: radial-gradient(circle, rgba(64, 92, 255, 0.1) 0%, rgba(0,0,0,0) 70%);
-            border-radius: 50%;
-            z-index: 0;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        :root { --accent: #405cff; }
+        body { background-color: #050505; color: white; font-family: -apple-system, sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .card-active { background: rgba(64, 92, 255, 0.15); border-color: var(--accent); box-shadow: 0 0 20px rgba(64, 92, 255, 0.1); transform: scale(1.02); }
+        .matched { opacity: 0; transform: scale(0.8); pointer-events: none; transition: all 0.5s ease; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+        .shake { animation: shake 0.3s ease-in-out; }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen">
-    <div class="glow top-[-20%] right-[-10%]"></div>
-    <div class="glow bottom-[-20%] left-[-10%]"></div>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="fixed top-[-10%] right-[-10%] w-[80vw] h-[80vw] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+    
+    <section id="view-hero" class="z-10 text-center">
+        <h1 class="text-6xl font-extralight tracking-[0.4em] mb-4">ZEN1TH</h1>
+        <p class="text-[10px] tracking-[0.8em] text-blue-400/40 uppercase mb-24">Unlock Your World</p>
+        <button onclick="switchView('view-levels')" class="px-16 py-4 rounded-full bg-white text-black font-medium active:scale-95 transition-all">进入系统</button>
+    </section>
 
-    <div class="z-10 text-center px-6">
-        <h1 class="text-6xl font-extralight tracking-[0.3em] mb-4 opacity-90">ZEN1TH</h1>
-        <p class="text-xs tracking-[0.5em] text-blue-400/60 uppercase mb-12">Cinematic English</p>
-        <h2 class="text-xl font-light tracking-widest text-white/70 mb-16">在沉浸与游戏中重新认识英语</h2>
-        
-        <div class="flex flex-col gap-4 items-center">
-            <button class="w-64 py-4 rounded-full bg-white text-black font-medium active:scale-95 transition-transform">
-                开始学习
-            </button>
-            <button class="w-64 py-4 rounded-full glass text-white/60 active:scale-95 transition-transform">
-                今日挑战
-            </button>
+    <section id="view-levels" class="hidden z-10 w-full max-w-md">
+        <h2 class="text-xl font-light tracking-widest mb-12 text-center text-white/60">选择同步维度</h2>
+        <div class="grid grid-cols-1 gap-4">
+            <div onclick="initGame('Origins')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
+                <div>
+                    <h3 class="text-lg font-medium">Origins</h3>
+                    <p class="text-xs text-white/30 italic">基础意识同步</p>
+                </div>
+                <span class="text-blue-500">→</span>
+            </div>
+            <div onclick="initGame('Manhattan')" class="glass p-8 rounded-3xl flex justify-between items-center opacity-50">
+                <div>
+                    <h3 class="text-lg font-medium">Manhattan</h3>
+                    <p class="text-xs text-white/30 italic">钢铁森林 (锁定)</p>
+                </div>
+                <span>🔒</span>
+            </div>
         </div>
-    </div>
+        <button onclick="switchView('view-hero')" class="mt-12 w-full text-[10px] tracking-widest text-white/20 uppercase">← 返回终端</button>
+    </section>
+
+    <section id="view-game" class="hidden z-10 w-full max-w-md">
+        <div class="flex justify-between items-center mb-12 px-2">
+            <div id="game-title" class="text-xs tracking-widest text-blue-400/60 uppercase">Level: Origins</div>
+            <div class="text-[10px] text-white/20 uppercase">Progress <span id="progress-text">0</span>%</div>
+        </div>
+        <div id="game-grid" class="grid grid-cols-2 gap-4">
+            </div>
+    </section>
+
+    <script>
+        const database = {
+            'Origins': [
+                { en: 'Ethereal', cn: '空灵的' },
+                { en: 'Zenith', cn: '顶点' },
+                { en: 'Cinematic', cn: '电影感的' },
+                { en: 'Vision', cn: '愿景/视野' }
+            ]
+        };
+
+        let selected = [];
+        let matches = 0;
+
+        function switchView(id) {
+            ['view-hero', 'view-levels', 'view-game'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function initGame(levelId) {
+            const words = database[levelId];
+            if (!words) return;
+            
+            switchView('view-game');
+            document.getElementById('game-title').innerText = `Syncing: ${levelId}`;
+            const grid = document.getElementById('game-grid');
+            grid.innerHTML = '';
+            matches = 0;
+            updateProgress(words.length);
+
+            let cards = [];
+            words.forEach(w => {
+                cards.push({ text: w.en, id: w.en });
+                cards.push({ text: w.cn, id: w.en });
+            });
+            cards.sort(() => Math.random() - 0.5);
+
+            cards.forEach(card => {
+                const div = document.createElement('div');
+                div.className = 'glass p-6 rounded-2xl text-center text-sm font-light min-h-[90px] flex items-center justify-center transition-all';
+                div.innerText = card.text;
+                div.dataset.id = card.id;
+                div.onclick = () => handleTap(div, words.length);
+                grid.appendChild(div);
+            });
+        }
+
+        function handleTap(el, total) {
+            if (selected.length === 2 || el.classList.contains('card-active')) return;
+
+            el.classList.add('card-active');
+            selected.push(el);
+
+            if (selected.length === 2) {
+                if (selected[0].dataset.id === selected[1].dataset.id) {
+                    setTimeout(() => {
+                        selected.forEach(c => c.classList.add('matched'));
+                        selected = [];
+                        matches++;
+                        updateProgress(total);
+                        if (matches === total) {
+                            alert('同步成功：你的视野已扩展');
+                            switchView('view-levels');
+                        }
+                    }, 400);
+                } else {
+                    setTimeout(() => {
+                        selected.forEach(c => {
+                            c.classList.remove('card-active');
+                            c.classList.add('shake');
+                            setTimeout(() => c.classList.remove('shake'), 300);
+                        });
+                        selected = [];
+                    }, 500);
+                }
+            }
+        }
+
+        function updateProgress(total) {
+            const p = Math.round((matches / total) * 100);
+            document.getElementById('progress-text').innerText = p;
+        }
+    </script>
 </body>
 </html>
