@@ -7,175 +7,149 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --accent: #405cff; }
-        body { background-color: #000; color: white; font-family: 'Inter', system-ui, sans-serif; overflow: hidden; }
-
-        /* 视频背景容器 */
-        .video-bg {
-            position: fixed; inset: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: -1; filter: brightness(0.4) saturate(1.2);
-            transition: transform 2s ease-in-out;
-        }
-
-        /* 电影感遮罩 */
-        .overlay { position: fixed; inset: 0; background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%); z-index: 0; }
-
-        /* 3D 卡片核心样式 */
-        .scene { perspective: 1000px; }
-        .card-3d {
-            position: relative; width: 100%; height: 110px;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d; cursor: pointer;
-        }
-        .card-3d.is-flipped { transform: rotateY(180deg); }
-        
-        .card-face {
-            position: absolute; width: 100%; height: 100%;
-            backface-visibility: hidden; display: flex;
-            align-items: center; justify-content: center;
-            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
-        }
-        .card-back { transform: rotateY(180deg); background: rgba(64, 92, 255, 0.2); border-color: var(--accent); }
-
-        /* 界面切换动画 */
-        .view { transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); }
-        .hidden-view { opacity: 0; pointer-events: none; transform: scale(1.1) translateY(20px); }
-
-        /* 按钮动效 */
-        .btn-glow {
-            box-shadow: 0 0 20px rgba(64, 92, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-glow:hover { box-shadow: 0 0 40px rgba(64, 92, 255, 0.6); transform: scale(1.05); }
+        body { background-color: #050505; color: white; font-family: -apple-system, sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .card-active { background: rgba(64, 92, 255, 0.15); border-color: var(--accent); box-shadow: 0 0 20px rgba(64, 92, 255, 0.1); transform: scale(1.02); }
+        .matched { opacity: 0; transform: scale(0.8); pointer-events: none; transition: all 0.5s ease; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+        .shake { animation: shake 0.3s ease-in-out; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
-    <video class="video-bg" autoplay muted loop playsinline>
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-stars-in-the-night-sky-animated-121-large.mp4" type="video/mp4">
-    </video>
-    <div class="overlay"></div>
+<body class="min-h-screen flex flex-col items-center justify-between py-12 px-6">
+    <div class="fixed top-[-10%] right-[-10%] w-[80vw] h-[80vw] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <section id="view-hero" class="view z-10 flex flex-col items-center justify-center flex-grow text-center w-full px-6">
-        <div class="space-y-4">
-            <h1 class="text-7xl font-thin tracking-[0.6em] animate-pulse">ZEN1TH</h1>
-            <div class="h-[1px] w-24 bg-white/20 mx-auto"></div>
-            <p class="text-[10px] tracking-[1.2em] text-blue-400/60 uppercase">The World Awaits</p>
-        </div>
+    <section id="view-hero" class="z-10 flex flex-col items-center justify-center flex-grow text-center w-full">
+        <h1 class="text-6xl font-extralight tracking-[0.4em] mb-4">ZEN1TH</h1>
+        <p class="text-[10px] tracking-[0.8em] text-blue-400/40 uppercase mb-24">Unlock Your World</p>
+        <button onclick="switchView('view-levels')" class="px-16 py-4 rounded-full bg-white text-black font-medium active:scale-95 transition-all">进入系统</button>
         
-        <button onclick="switchView('view-levels')" class="btn-glow mt-32 px-14 py-4 rounded-full bg-white text-black text-sm font-light tracking-[0.3em] uppercase transition-all">
-            开始同步 / Begin Sync
-        </button>
-
-        <div class="mt-40 opacity-30 text-[9px] tracking-[0.4em] font-light italic">
-            "至善，一如既往"
+        <div class="mt-32 opacity-30 hover:opacity-100 transition-opacity duration-500">
+            <p class="text-[10px] tracking-[0.3em] mb-2 uppercase italic">你的回响，是Zen1th的基石</p>
+            <a href="mailto:wjszzh888@163.com" class="text-[11px] font-light border-b border-white/20 pb-1">wjszzh888@163.com</a>
         </div>
     </section>
 
-    <section id="view-levels" class="view hidden-view fixed inset-0 z-10 flex flex-col items-center justify-center px-6">
-        <h2 class="text-xs font-light tracking-[0.8em] mb-12 text-white/40 uppercase">维度选择 / Dimensions</h2>
-        <div class="w-full max-w-sm space-y-4">
-            <div onclick="initGame('Origins')" class="group p-8 rounded-3xl border border-white/5 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all cursor-pointer">
-                <h3 class="text-xl font-light">Origins</h3>
-                <p class="text-[9px] text-white/20 tracking-widest mt-1 uppercase">基础意识同步</p>
+    <section id="view-levels" class="hidden z-10 w-full max-w-md pt-10">
+        <h2 class="text-xl font-light tracking-widest mb-12 text-center text-white/60 uppercase">同步维度</h2>
+        <div class="grid grid-cols-1 gap-4 overflow-y-auto max-h-[60vh] pr-2">
+            <div onclick="initGame('Origins')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
+                <div><h3 class="text-lg font-medium">Origins</h3><p class="text-xs text-white/30 italic">基础意识同步</p></div>
+                <span class="text-blue-500">→</span>
             </div>
-            <div onclick="initGame('Manhattan')" class="group p-8 rounded-3xl border border-white/5 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all cursor-pointer">
-                <h3 class="text-xl font-light text-blue-400">Manhattan</h3>
-                <p class="text-[9px] text-white/20 tracking-widest mt-1 uppercase">钢铁森林的意志</p>
+            <div onclick="initGame('Manhattan')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
+                <div><h3 class="text-lg font-medium">Manhattan</h3><p class="text-xs text-white/30 italic">钢铁森林的意志</p></div>
+                <span class="text-blue-500">→</span>
+            </div>
+            <div onclick="initGame('Queenstown')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
+                <div><h3 class="text-lg font-medium">Queenstown</h3><p class="text-xs text-white/30 italic">纯净荒野的召唤</p></div>
+                <span class="text-blue-500">→</span>
+            </div>
+             <div class="glass p-8 rounded-3xl flex justify-between items-center opacity-40">
+                <div><h3 class="text-lg font-medium">Silicon Valley</h3><p class="text-xs text-white/30 italic">数字脉冲 (锁定)</p></div>
+                <span>🔒</span>
             </div>
         </div>
-        <button onclick="switchView('view-hero')" class="mt-12 text-[9px] tracking-widest text-white/20 uppercase hover:text-white/60">← 返回主终端</button>
+        <button onclick="switchView('view-hero')" class="mt-12 w-full text-[10px] tracking-widest text-white/20 uppercase">← 返回终端</button>
     </section>
 
-    <section id="view-game" class="view hidden-view fixed inset-0 z-20 flex flex-col items-center p-6 bg-black/80 backdrop-blur-2xl">
-        <div class="w-full max-w-md flex justify-between items-end mb-12 mt-10">
-            <div class="text-[10px] tracking-widest text-blue-400" id="game-title">SYNCING...</div>
-            <div class="text-2xl font-thin"><span id="progress-text">0</span>%</div>
+    <section id="view-game" class="hidden z-10 w-full max-w-md">
+        <div class="flex justify-between items-center mb-12 px-2">
+            <div id="game-title" class="text-xs tracking-widest text-blue-400/60 uppercase">Syncing...</div>
+            <div class="text-[10px] text-white/20 uppercase">Sync <span id="progress-text">0</span>%</div>
         </div>
-        <div id="game-grid" class="grid grid-cols-2 gap-4 w-full max-w-md"></div>
+        <div id="game-grid" class="grid grid-cols-2 gap-4"></div>
     </section>
 
     <script>
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioCtx();
-
-        function playEtherealSound() {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(1200, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.5);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.start(); osc.stop(ctx.currentTime + 0.8);
-        }
-
+        // 扩展词库：你可以随时在这里增加单词
         const database = {
-            'Origins': [{ en: 'Zenith', cn: '巅峰' },{ en: 'Ethereal', cn: '空灵' },{ en: 'Void', cn: '虚空' },{ en: 'Soul', cn: '灵魂' }],
-            'Manhattan': [{ en: 'Skyline', cn: '天际线' },{ en: 'Pulse', cn: '脉搏' },{ en: 'Steel', cn: '钢铁' },{ en: 'Neon', cn: '霓虹' }]
+            'Origins': [
+                { en: 'Zenith', cn: '顶点/巅峰' },
+                { en: 'Ethereal', cn: '优雅空灵的' },
+                { en: 'Perspective', cn: '视角/观点' },
+                { en: 'Manifesto', cn: '宣言' }
+            ],
+            'Manhattan': [
+                { en: 'Skyscraper', cn: '摩天大楼' },
+                { en: 'Metropolis', cn: '大都市' },
+                { en: 'Ambition', cn: '野心/抱负' },
+                { en: 'Hustle', cn: '忙碌/拼搏' }
+            ],
+            'Queenstown': [
+                { en: 'Wilderness', cn: '荒野/自然' },
+                { en: 'Serene', cn: '宁静的' },
+                { en: 'Adrenaline', cn: '肾上腺素' },
+                { en: 'Landscape', cn: '景观/风景' }
+            ]
         };
-
-        function switchView(id) {
-            if (ctx.state === 'suspended') ctx.resume();
-            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden-view'));
-            document.getElementById(id).classList.remove('hidden-view');
-            // 切换背景视频亮度以增加层次感
-            const bg = document.querySelector('.video-bg');
-            bg.style.transform = id === 'view-game' ? 'scale(1.1) rotate(2deg)' : 'scale(1) rotate(0deg)';
-        }
-
-        function initGame(levelId) {
-            const words = database[levelId];
-            switchView('view-game');
-            document.getElementById('game-title').innerText = levelId.toUpperCase();
-            const grid = document.getElementById('game-grid');
-            grid.innerHTML = '';
-            
-            let cards = [];
-            words.forEach(w => { cards.push({ text: w.en, id: w.en }); cards.push({ text: w.cn, id: w.en }); });
-            cards.sort(() => Math.random() - 0.5);
-
-            cards.forEach(card => {
-                const scene = document.createElement('div');
-                scene.className = 'scene';
-                scene.innerHTML = `
-                    <div class="card-3d" data-id="${card.id}">
-                        <div class="card-face text-xs font-light px-2 text-center">${card.text}</div>
-                        <div class="card-face card-back text-xs">MATCHED</div>
-                    </div>
-                `;
-                const cardEl = scene.querySelector('.card-3d');
-                cardEl.onclick = () => handleTap(cardEl, words.length);
-                grid.appendChild(scene);
-            });
-        }
 
         let selected = [];
         let matches = 0;
 
+        function switchView(id) {
+            ['view-hero', 'view-levels', 'view-game'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function initGame(levelId) {
+            const words = database[levelId];
+            if (!words) return;
+            switchView('view-game');
+            document.getElementById('game-title').innerText = `Syncing: ${levelId}`;
+            const grid = document.getElementById('game-grid');
+            grid.innerHTML = '';
+            matches = 0;
+            updateProgress(words.length);
+
+            let cards = [];
+            words.forEach(w => {
+                cards.push({ text: w.en, id: w.en });
+                cards.push({ text: w.cn, id: w.en });
+            });
+            cards.sort(() => Math.random() - 0.5);
+
+            cards.forEach(card => {
+                const div = document.createElement('div');
+                div.className = 'glass p-6 rounded-2xl text-center text-xs font-light min-h-[100px] flex items-center justify-center transition-all';
+                div.innerText = card.text;
+                div.dataset.id = card.id;
+                div.onclick = () => handleTap(div, words.length);
+                grid.appendChild(div);
+            });
+        }
+
         function handleTap(el, total) {
-            if (selected.length === 2 || el.classList.contains('is-flipped')) return;
-            el.classList.add('is-flipped');
+            if (selected.length === 2 || el.classList.contains('card-active')) return;
+            el.classList.add('card-active');
             selected.push(el);
 
             if (selected.length === 2) {
                 if (selected[0].dataset.id === selected[1].dataset.id) {
-                    playEtherealSound();
-                    matches++;
-                    updateProgress(total);
-                    selected = [];
-                    if (matches === total) setTimeout(() => switchView('view-levels'), 1500);
+                    setTimeout(() => {
+                        selected.forEach(c => c.classList.add('matched'));
+                        selected = [];
+                        matches++;
+                        updateProgress(total);
+                        if (matches === total) {
+                            setTimeout(() => { switchView('view-levels'); }, 800);
+                        }
+                    }, 400);
                 } else {
                     setTimeout(() => {
-                        selected.forEach(c => c.classList.remove('is-flipped'));
+                        selected.forEach(c => {
+                            c.classList.remove('card-active');
+                            c.classList.add('shake');
+                            setTimeout(() => c.classList.remove('shake'), 300);
+                        });
                         selected = [];
-                    }, 800);
+                    }, 500);
                 }
             }
         }
 
         function updateProgress(total) {
-            document.getElementById('progress-text').innerText = Math.round((matches/total)*100);
+            const p = Math.round((matches / total) * 100);
+            document.getElementById('progress-text').innerText = p;
         }
     </script>
 </body>
