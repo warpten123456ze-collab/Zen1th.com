@@ -8,7 +8,6 @@
     <style>
         :root { --accent: #405cff; --glass-bg: rgba(255, 255, 255, 0.03); }
         
-        /* 基础样式优化：增加字体平滑度 */
         body { 
             background-color: #020202; 
             color: white; 
@@ -17,7 +16,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 电影感滤镜：胶片颗粒与阴影 */
         .vignette {
             position: fixed; inset: 0;
             background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
@@ -29,7 +27,6 @@
             opacity: 0.04; pointer-events: none; z-index: 40;
         }
 
-        /* 玻璃拟态 (Glassmorphism) 升级 */
         .glass { 
             background: var(--glass-bg); 
             backdrop-filter: blur(20px) saturate(180%); 
@@ -39,7 +36,6 @@
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* 动态背景光晕 */
         .orb {
             position: absolute; border-radius: 50%; filter: blur(100px);
             background: linear-gradient(to right, #405cff, #30cfd0);
@@ -51,7 +47,6 @@
             100% { transform: translate(20vw, 10vh) scale(1.2); }
         }
 
-        /* 交互反馈动画 */
         .card-active { 
             background: rgba(64, 92, 255, 0.2); 
             border-color: var(--accent); 
@@ -67,13 +62,11 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
         .shake { animation: shake 0.4s ease-in-out; }
 
-        /* 列表滚动条美化 */
         .custom-scroll::-webkit-scrollbar { width: 3px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between py-12 px-6">
-    <!-- 电影感装饰层 -->
     <div class="vignette"></div>
     <div class="grain"></div>
     <div class="orb w-[60vw] h-[60vw] top-[-20%] left-[-20%]"></div>
@@ -81,7 +74,7 @@
 
     <section id="view-hero" class="z-10 flex flex-col items-center justify-center flex-grow text-center w-full transition-all duration-1000">
         <h1 class="text-6xl font-extralight tracking-[0.5em] mb-4 opacity-90">ZEN1TH</h1>
-        <p class="text-[10px] tracking-[1em] text-blue-400/50 uppercase mb-24">Perception Beyond Borders</p>
+        <p class="text-[10px] tracking-[1em] text-blue-400/50 uppercase mb-24">Unlock Your World</p>
         <button onclick="switchView('view-levels')" class="group relative px-20 py-5 rounded-full bg-white text-black font-semibold overflow-hidden transition-all hover:scale-105 active:scale-95">
             <span class="relative z-10">进入系统</span>
             <div class="absolute inset-0 bg-blue-500 transform translate-y-full transition-transform group-hover:translate-y-0 opacity-10"></div>
@@ -96,14 +89,16 @@
     <section id="view-levels" class="hidden z-10 w-full max-w-md pt-10">
         <h2 class="text-xs font-light tracking-[0.6em] mb-16 text-center text-white/40 uppercase">同步维度 / Dimensions</h2>
         <div class="grid grid-cols-1 gap-5 custom-scroll overflow-y-auto max-h-[55vh] pr-4">
-            <!-- 关卡卡片 -->
             <div onclick="initGame('Origins')" class="glass p-10 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer group">
                 <div><h3 class="text-xl font-light tracking-wide group-hover:text-blue-400 transition-colors">Origins</h3><p class="text-[10px] text-white/20 mt-1 uppercase tracking-widest">基础意识同步</p></div>
                 <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-all text-blue-500">→</div>
             </div>
-            <!-- ... 其他关卡保持原样，增加同样的样式即可 ... -->
             <div onclick="initGame('Manhattan')" class="glass p-10 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer group">
                 <div><h3 class="text-xl font-light tracking-wide group-hover:text-blue-400 transition-colors">Manhattan</h3><p class="text-[10px] text-white/20 mt-1 uppercase tracking-widest">钢铁森林的意志</p></div>
+                <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-all text-blue-500">→</div>
+            </div>
+            <div onclick="initGame('Queenstown')" class="glass p-10 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer group">
+                <div><h3 class="text-xl font-light tracking-wide group-hover:text-blue-400 transition-colors">Queenstown</h3><p class="text-[10px] text-white/20 mt-1 uppercase tracking-widest">纯净荒野的召唤</p></div>
                 <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-all text-blue-500">→</div>
             </div>
         </div>
@@ -125,30 +120,34 @@
     </section>
 
     <script>
-        // 1. 空灵音效生成器 (Web Audio API)
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         const ctx = new AudioCtx();
 
+        // 升级版水晶音效逻辑
         function playEtherealSound() {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+
+            osc.type = 'triangle'; 
+            filter.type = 'lowpass';
             
-            osc.type = 'sine'; // 正弦波最空灵
-            osc.frequency.setValueAtTime(880, ctx.currentTime); // 高音 A
-            osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.5); // 滑音效果
-            
+            const frequency = 1600 + Math.random() * 50; 
+            osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.1);
+
             gain.gain.setValueAtTime(0, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1); // 缓慢消失
-            
-            osc.connect(gain);
+            gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.01); 
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+
+            osc.connect(filter);
+            filter.connect(gain);
             gain.connect(ctx.destination);
-            
+
             osc.start();
-            osc.stop(ctx.currentTime + 1);
+            osc.stop(ctx.currentTime + 1.5);
         }
 
-        // --- 保持原有逻辑不变 ---
         const database = {
             'Origins': [{ en: 'Zenith', cn: '顶点/巅峰' },{ en: 'Ethereal', cn: '优雅空灵的' },{ en: 'Perspective', cn: '视角/观点' },{ en: 'Manifesto', cn: '宣言' }],
             'Manhattan': [{ en: 'Skyscraper', cn: '摩天大楼' },{ en: 'Metropolis', cn: '大都市' },{ en: 'Ambition', cn: '野心/抱负' },{ en: 'Hustle', cn: '忙碌/拼搏' }],
@@ -159,7 +158,7 @@
         let matches = 0;
 
         function switchView(id) {
-            if (ctx.state === 'suspended') ctx.resume(); // 激活音频上下文
+            if (ctx.state === 'suspended') ctx.resume(); 
             ['view-hero', 'view-levels', 'view-game'].forEach(v => document.getElementById(v).classList.add('hidden'));
             const el = document.getElementById(id);
             el.classList.remove('hidden');
@@ -198,7 +197,7 @@
 
             if (selected.length === 2) {
                 if (selected[0].dataset.id === selected[1].dataset.id) {
-                    playEtherealSound(); // 触发空灵音效
+                    playEtherealSound(); 
                     setTimeout(() => {
                         selected.forEach(c => c.classList.add('matched'));
                         selected = [];
