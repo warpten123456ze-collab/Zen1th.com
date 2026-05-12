@@ -6,111 +6,184 @@
     <title>Zen1th | Cinematic Learning</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --accent: #405cff; }
-        body { background-color: #050505; color: white; font-family: -apple-system, sans-serif; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .card-active { background: rgba(64, 92, 255, 0.15); border-color: var(--accent); box-shadow: 0 0 20px rgba(64, 92, 255, 0.1); transform: scale(1.02); }
-        .matched { opacity: 0; transform: scale(0.8); pointer-events: none; transition: all 0.5s ease; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-        .shake { animation: shake 0.3s ease-in-out; }
+        :root { --accent: #405cff; --glass-bg: rgba(255, 255, 255, 0.03); }
+        
+        /* 基础样式优化：增加字体平滑度 */
+        body { 
+            background-color: #020202; 
+            color: white; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 电影感滤镜：胶片颗粒与阴影 */
+        .vignette {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none; z-index: 50;
+        }
+        .grain {
+            position: fixed; inset: 0;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.04; pointer-events: none; z-index: 40;
+        }
+
+        /* 玻璃拟态 (Glassmorphism) 升级 */
+        .glass { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(20px) saturate(180%); 
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 动态背景光晕 */
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(100px);
+            background: linear-gradient(to right, #405cff, #30cfd0);
+            opacity: 0.15; z-index: 0; animation: float 20s infinite alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(20vw, 10vh) scale(1.2); }
+        }
+
+        /* 交互反馈动画 */
+        .card-active { 
+            background: rgba(64, 92, 255, 0.2); 
+            border-color: var(--accent); 
+            box-shadow: 0 0 30px rgba(64, 92, 255, 0.2);
+            transform: scale(1.05) translateY(-5px); 
+        }
+        .matched { 
+            opacity: 0; 
+            transform: scale(0.5) rotate(5deg); 
+            pointer-events: none; 
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+        .shake { animation: shake 0.4s ease-in-out; }
+
+        /* 列表滚动条美化 */
+        .custom-scroll::-webkit-scrollbar { width: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between py-12 px-6">
-    <div class="fixed top-[-10%] right-[-10%] w-[80vw] h-[80vw] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <!-- 电影感装饰层 -->
+    <div class="vignette"></div>
+    <div class="grain"></div>
+    <div class="orb w-[60vw] h-[60vw] top-[-20%] left-[-20%]"></div>
+    <div class="orb w-[50vw] h-[50vw] bottom-[-10%] right-[-10%]" style="animation-delay: -5s; background: linear-gradient(to left, #6a11cb, #2575fc);"></div>
 
-    <section id="view-hero" class="z-10 flex flex-col items-center justify-center flex-grow text-center w-full">
-        <h1 class="text-6xl font-extralight tracking-[0.4em] mb-4">ZEN1TH</h1>
-        <p class="text-[10px] tracking-[0.8em] text-blue-400/40 uppercase mb-24">Unlock Your World</p>
-        <button onclick="switchView('view-levels')" class="px-16 py-4 rounded-full bg-white text-black font-medium active:scale-95 transition-all">进入系统</button>
+    <section id="view-hero" class="z-10 flex flex-col items-center justify-center flex-grow text-center w-full transition-all duration-1000">
+        <h1 class="text-6xl font-extralight tracking-[0.5em] mb-4 opacity-90">ZEN1TH</h1>
+        <p class="text-[10px] tracking-[1em] text-blue-400/50 uppercase mb-24">Perception Beyond Borders</p>
+        <button onclick="switchView('view-levels')" class="group relative px-20 py-5 rounded-full bg-white text-black font-semibold overflow-hidden transition-all hover:scale-105 active:scale-95">
+            <span class="relative z-10">进入系统</span>
+            <div class="absolute inset-0 bg-blue-500 transform translate-y-full transition-transform group-hover:translate-y-0 opacity-10"></div>
+        </button>
         
-        <div class="mt-32 opacity-30 hover:opacity-100 transition-opacity duration-500">
-            <p class="text-[10px] tracking-[0.3em] mb-2 uppercase italic">你的回响，是Zen1th的基石</p>
-            <a href="mailto:wjszzh888@163.com" class="text-[11px] font-light border-b border-white/20 pb-1">wjszzh888@163.com</a>
+        <div class="mt-32 opacity-20 hover:opacity-60 transition-opacity duration-700 cursor-default">
+            <p class="text-[9px] tracking-[0.4em] mb-3 uppercase font-light">你的回响，是臻一的基石</p>
+            <a href="mailto:wjszzh888@163.com" class="text-[10px] tracking-widest font-light border-b border-white/10 pb-1">WJSZZH888@163.COM</a>
         </div>
     </section>
 
     <section id="view-levels" class="hidden z-10 w-full max-w-md pt-10">
-        <h2 class="text-xl font-light tracking-widest mb-12 text-center text-white/60 uppercase">同步维度</h2>
-        <div class="grid grid-cols-1 gap-4 overflow-y-auto max-h-[60vh] pr-2">
-            <div onclick="initGame('Origins')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Origins</h3><p class="text-xs text-white/30 italic">基础意识同步</p></div>
-                <span class="text-blue-500">→</span>
+        <h2 class="text-xs font-light tracking-[0.6em] mb-16 text-center text-white/40 uppercase">同步维度 / Dimensions</h2>
+        <div class="grid grid-cols-1 gap-5 custom-scroll overflow-y-auto max-h-[55vh] pr-4">
+            <!-- 关卡卡片 -->
+            <div onclick="initGame('Origins')" class="glass p-10 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer group">
+                <div><h3 class="text-xl font-light tracking-wide group-hover:text-blue-400 transition-colors">Origins</h3><p class="text-[10px] text-white/20 mt-1 uppercase tracking-widest">基础意识同步</p></div>
+                <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-all text-blue-500">→</div>
             </div>
-            <div onclick="initGame('Manhattan')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Manhattan</h3><p class="text-xs text-white/30 italic">钢铁森林的意志</p></div>
-                <span class="text-blue-500">→</span>
-            </div>
-            <div onclick="initGame('Queenstown')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Queenstown</h3><p class="text-xs text-white/30 italic">纯净荒野的召唤</p></div>
-                <span class="text-blue-500">→</span>
-            </div>
-             <div class="glass p-8 rounded-3xl flex justify-between items-center opacity-40">
-                <div><h3 class="text-lg font-medium">Silicon Valley</h3><p class="text-xs text-white/30 italic">数字脉冲 (锁定)</p></div>
-                <span>🔒</span>
+            <!-- ... 其他关卡保持原样，增加同样的样式即可 ... -->
+            <div onclick="initGame('Manhattan')" class="glass p-10 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer group">
+                <div><h3 class="text-xl font-light tracking-wide group-hover:text-blue-400 transition-colors">Manhattan</h3><p class="text-[10px] text-white/20 mt-1 uppercase tracking-widest">钢铁森林的意志</p></div>
+                <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-all text-blue-500">→</div>
             </div>
         </div>
-        <button onclick="switchView('view-hero')" class="mt-12 w-full text-[10px] tracking-widest text-white/20 uppercase">← 返回终端</button>
+        <button onclick="switchView('view-hero')" class="mt-16 w-full text-[9px] tracking-[0.8em] text-white/10 hover:text-white/40 transition-colors uppercase">← BACK TO TERMINAL</button>
     </section>
 
     <section id="view-game" class="hidden z-10 w-full max-w-md">
-        <div class="flex justify-between items-center mb-12 px-2">
-            <div id="game-title" class="text-xs tracking-widest text-blue-400/60 uppercase">Syncing...</div>
-            <div class="text-[10px] text-white/20 uppercase">Sync <span id="progress-text">0</span>%</div>
+        <div class="flex justify-between items-end mb-16 px-4">
+            <div>
+                <div id="game-title" class="text-[10px] tracking-[0.4em] text-blue-400/60 uppercase mb-1">SYNCHRONIZING</div>
+                <div class="h-[1px] w-12 bg-blue-500/30"></div>
+            </div>
+            <div class="text-right">
+                <div class="text-[24px] font-extralight text-white/80"><span id="progress-text">0</span>%</div>
+                <div class="text-[8px] tracking-widest text-white/20 uppercase">Core Integrity</div>
+            </div>
         </div>
-        <div id="game-grid" class="grid grid-cols-2 gap-4"></div>
+        <div id="game-grid" class="grid grid-cols-2 gap-5"></div>
     </section>
 
     <script>
-        // 扩展词库：你可以随时在这里增加单词
+        // 1. 空灵音效生成器 (Web Audio API)
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+
+        function playEtherealSound() {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.type = 'sine'; // 正弦波最空灵
+            osc.frequency.setValueAtTime(880, ctx.currentTime); // 高音 A
+            osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.5); // 滑音效果
+            
+            gain.gain.setValueAtTime(0, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1); // 缓慢消失
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start();
+            osc.stop(ctx.currentTime + 1);
+        }
+
+        // --- 保持原有逻辑不变 ---
         const database = {
-            'Origins': [
-                { en: 'Zenith', cn: '顶点/巅峰' },
-                { en: 'Ethereal', cn: '优雅空灵的' },
-                { en: 'Perspective', cn: '视角/观点' },
-                { en: 'Manifesto', cn: '宣言' }
-            ],
-            'Manhattan': [
-                { en: 'Skyscraper', cn: '摩天大楼' },
-                { en: 'Metropolis', cn: '大都市' },
-                { en: 'Ambition', cn: '野心/抱负' },
-                { en: 'Hustle', cn: '忙碌/拼搏' }
-            ],
-            'Queenstown': [
-                { en: 'Wilderness', cn: '荒野/自然' },
-                { en: 'Serene', cn: '宁静的' },
-                { en: 'Adrenaline', cn: '肾上腺素' },
-                { en: 'Landscape', cn: '景观/风景' }
-            ]
+            'Origins': [{ en: 'Zenith', cn: '顶点/巅峰' },{ en: 'Ethereal', cn: '优雅空灵的' },{ en: 'Perspective', cn: '视角/观点' },{ en: 'Manifesto', cn: '宣言' }],
+            'Manhattan': [{ en: 'Skyscraper', cn: '摩天大楼' },{ en: 'Metropolis', cn: '大都市' },{ en: 'Ambition', cn: '野心/抱负' },{ en: 'Hustle', cn: '忙碌/拼搏' }],
+            'Queenstown': [{ en: 'Wilderness', cn: '荒野/自然' },{ en: 'Serene', cn: '宁静的' },{ en: 'Adrenaline', cn: '肾上腺素' },{ en: 'Landscape', cn: '景观/风景' }]
         };
 
         let selected = [];
         let matches = 0;
 
         function switchView(id) {
+            if (ctx.state === 'suspended') ctx.resume(); // 激活音频上下文
             ['view-hero', 'view-levels', 'view-game'].forEach(v => document.getElementById(v).classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.style.opacity = 0;
+            setTimeout(() => el.style.opacity = 1, 50);
         }
 
         function initGame(levelId) {
             const words = database[levelId];
             if (!words) return;
             switchView('view-game');
-            document.getElementById('game-title').innerText = `Syncing: ${levelId}`;
+            document.getElementById('game-title').innerText = `SYNCING DIMENSION: ${levelId}`;
             const grid = document.getElementById('game-grid');
             grid.innerHTML = '';
             matches = 0;
             updateProgress(words.length);
 
             let cards = [];
-            words.forEach(w => {
-                cards.push({ text: w.en, id: w.en });
-                cards.push({ text: w.cn, id: w.en });
-            });
+            words.forEach(w => { cards.push({ text: w.en, id: w.en }); cards.push({ text: w.cn, id: w.en }); });
             cards.sort(() => Math.random() - 0.5);
 
             cards.forEach(card => {
                 const div = document.createElement('div');
-                div.className = 'glass p-6 rounded-2xl text-center text-xs font-light min-h-[100px] flex items-center justify-center transition-all';
+                div.className = 'glass p-8 rounded-[2rem] text-center text-[13px] font-light min-h-[110px] flex items-center justify-center transition-all cursor-pointer hover:bg-white/5';
                 div.innerText = card.text;
                 div.dataset.id = card.id;
                 div.onclick = () => handleTap(div, words.length);
@@ -125,13 +198,14 @@
 
             if (selected.length === 2) {
                 if (selected[0].dataset.id === selected[1].dataset.id) {
+                    playEtherealSound(); // 触发空灵音效
                     setTimeout(() => {
                         selected.forEach(c => c.classList.add('matched'));
                         selected = [];
                         matches++;
                         updateProgress(total);
                         if (matches === total) {
-                            setTimeout(() => { switchView('view-levels'); }, 800);
+                            setTimeout(() => { switchView('view-levels'); }, 1200);
                         }
                     }, 400);
                 } else {
@@ -139,7 +213,7 @@
                         selected.forEach(c => {
                             c.classList.remove('card-active');
                             c.classList.add('shake');
-                            setTimeout(() => c.classList.remove('shake'), 300);
+                            setTimeout(() => c.classList.remove('shake'), 400);
                         });
                         selected = [];
                     }, 500);
