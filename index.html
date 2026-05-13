@@ -1,156 +1,426 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zen1th | Cinematic Learning</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root { --accent: #405cff; }
-        body { background-color: #050505; color: white; font-family: -apple-system, sans-serif; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .card-active { background: rgba(64, 92, 255, 0.15); border-color: var(--accent); box-shadow: 0 0 20px rgba(64, 92, 255, 0.1); transform: scale(1.02); }
-        .matched { opacity: 0; transform: scale(0.8); pointer-events: none; transition: all 0.5s ease; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-        .shake { animation: shake 0.3s ease-in-out; }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZEN1TH</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+body{
+font-family:'Inter',sans-serif;
+background:#050507;
+overflow:hidden;
+color:white;
+}
+::-webkit-scrollbar{
+display:none;
+}
+.bg-layer{
+position:fixed;
+inset:0;
+overflow:hidden;
+z-index:-10;
+}
+.gradient-1,
+.gradient-2,
+.gradient-3{
+position:absolute;
+border-radius:9999px;
+filter:blur(120px);
+opacity:.22;
+animation:float 12s ease-in-out infinite;
+}
+.gradient-1{
+width:40vw;
+height:40vw;
+background:#4060ff;
+top:-10%;
+left:-10%;
+}
+.gradient-2{
+width:35vw;
+height:35vw;
+background:#8b5cf6;
+bottom:-10%;
+right:-10%;
+animation-delay:2s;
+}
+.gradient-3{
+width:30vw;
+height:30vw;
+background:#1e3a8a;
+top:40%;
+left:35%;
+animation-delay:4s;
+}
+@keyframes float{
+0%,100%{
+transform:translateY(0px) translateX(0px);
+}
+50%{
+transform:translateY(-30px) translateX(20px);
+}
+}
+.glass{
+background:rgba(255,255,255,.04);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.08);
+box-shadow:
+0 0 40px rgba(255,255,255,.03),
+0 0 80px rgba(64,92,255,.05);
+}
+.card{
+transition:all .5s ease;
+}
+.card:hover{
+transform:translateY(-6px) scale(1.02);
+border-color:rgba(96,165,250,.4);
+box-shadow:
+0 0 40px rgba(64,92,255,.12),
+0 0 120px rgba(139,92,246,.08);
+}
+.fade-in{
+animation:fade 1.2s ease forwards;
+}
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+.particle{
+position:absolute;
+width:3px;
+height:3px;
+background:white;
+border-radius:9999px;
+opacity:.2;
+animation:particleFloat linear infinite;
+}
+@keyframes particleFloat{
+from{
+transform:translateY(100vh);
+opacity:0;
+}
+10%{
+opacity:.25;
+}
+to{
+transform:translateY(-10vh);
+opacity:0;
+}
+}
+.hero-title{
+letter-spacing:.5em;
+font-weight:200;
+}
+.match-card{
+transition:all .35s ease;
+cursor:pointer;
+}
+.match-card.active{
+border-color:#60a5fa;
+background:rgba(64,92,255,.12);
+transform:scale(1.03);
+}
+.match-card.correct{
+opacity:0;
+transform:scale(.7);
+pointer-events:none;
+}
+.match-card.wrong{
+animation:shake .35s ease;
+}
+@keyframes shake{
+0%,100%{transform:translateX(0);}
+25%{transform:translateX(-4px);}
+75%{transform:translateX(4px);}
+}
+.progress-glow{
+box-shadow:0 0 20px rgba(96,165,250,.5);
+}
+</style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-between py-12 px-6">
-    <div class="fixed top-[-10%] right-[-10%] w-[80vw] h-[80vw] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+<body>
+<div class="bg-layer">
+<div class="gradient-1"></div>
+<div class="gradient-2"></div>
+<div class="gradient-3"></div>
+</div>
+<div id="particles"></div>
+<!-- HERO -->
+<section id="hero"
+class="min-h-screen flex flex-col justify-center items-center px-6 text-center fade-in">
+<h1 class="hero-title text-5xl md:text-7xl mb-6">
+ZEN1TH
+</h1>
+<p class="text-blue-300/60 tracking-[0.4em] uppercase text-[11px] mb-10">
+Unlock Your World
+</p>
+<p class="max-w-md text-white/50 text-sm leading-7 mb-16">
+在沉浸、氛围与游戏中重新认识英语。
+</p>
+<div class="flex flex-col md:flex-row gap-4 w-full max-w-sm">
 
-    <section id="view-hero" class="z-10 flex flex-col items-center justify-center flex-grow text-center w-full">
-        <h1 class="text-6xl font-extralight tracking-[0.4em] mb-4">ZEN1TH</h1>
-        <p class="text-[10px] tracking-[0.8em] text-blue-400/40 uppercase mb-24">Unlock Your World</p>
-        <button onclick="switchView('view-levels')" class="px-16 py-4 rounded-full bg-white text-black font-medium active:scale-95 transition-all">进入系统</button>
-        
-        <div class="mt-32 opacity-30 hover:opacity-100 transition-opacity duration-500">
-            <p class="text-[10px] tracking-[0.3em] mb-2 uppercase italic">你的回响，是Zen1th的基石</p>
-            <a href="mailto:wjszzh888@163.com" class="text-[11px] font-light border-b border-white/20 pb-1">wjszzh888@163.com</a>
-        </div>
-    </section>
+进入系统
+每日挑战
+</div>
+<div class="absolute bottom-10 text-center opacity-40">
+<p class="text-[10px] tracking-[0.3em] mb-2 italic">
+你的回响，是 Zen1th 的基石
+</p>
+</div>
+</section>
+<!-- DASHBOARD -->
+<section id="dashboard"
+class="hidden min-h-screen px-6 py-12 overflow-y-auto">
+<div class="max-w-6xl mx-auto">
+<div class="mb-14">
+<h2 class="text-3xl md:text-5xl font-extralight mb-3">
+同步维度
+</h2>
+<p class="text-white/40">
+选择你的意识领域。
+</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<div onclick="startGame('daily')"
+class="glass card rounded-3xl p-8">
+<p class="text-xs text-blue-300/60 mb-4 uppercase">
+Daily
+</p>
+<h3 class="text-2xl font-light mb-3">
+每日挑战
+</h3>
+<p class="text-white/40 leading-7 text-sm">
+进入今日同步循环。
+</p>
+</div>
+<div onclick="startGame('ai')"
+class="glass card rounded-3xl p-8">
+<p class="text-xs text-purple-300/60 mb-4 uppercase">
+AI & Future
+</p>
+<h3 class="text-2xl font-light mb-3">
+AI 与未来
+</h3>
+<p class="text-white/40 leading-7 text-sm">
+探索未来文明语言。
+</p>
+</div>
+<div onclick="startGame('psychology')"
+class="glass card rounded-3xl p-8">
+<p class="text-xs text-cyan-300/60 mb-4 uppercase">
+Psychology
+</p>
+<h3 class="text-2xl font-light mb-3">
+心理学
+</h3>
+<p class="text-white/40 leading-7 text-sm">
+理解情绪与意识。
+</p>
+</div>
+<div onclick="startGame('travel')"
+class="glass card rounded-3xl p-8">
+<p class="text-xs text-orange-300/60 mb-4 uppercase">
+Travel
+</p>
+<h3 class="text-2xl font-light mb-3">
+旅行英语
+</h3>
+<p class="text-white/40 leading-7 text-sm">
+连接世界与未知。
+</p>
+</div>
+<div class="glass rounded-3xl p-8 opacity-40">
+<p class="text-xs mb-4 uppercase">
+Immersive Mode
+</p>
+<h3 class="text-2xl font-light mb-3">
+沉浸模式
+</h3>
+<p class="text-white/40 text-sm">
+即将开放。
+</p>
+</div>
+</div>
 
-    <section id="view-levels" class="hidden z-10 w-full max-w-md pt-10">
-        <h2 class="text-xl font-light tracking-widest mb-12 text-center text-white/60 uppercase">同步维度</h2>
-        <div class="grid grid-cols-1 gap-4 overflow-y-auto max-h-[60vh] pr-2">
-            <div onclick="initGame('Origins')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Origins</h3><p class="text-xs text-white/30 italic">基础意识同步</p></div>
-                <span class="text-blue-500">→</span>
-            </div>
-            <div onclick="initGame('Manhattan')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Manhattan</h3><p class="text-xs text-white/30 italic">钢铁森林的意志</p></div>
-                <span class="text-blue-500">→</span>
-            </div>
-            <div onclick="initGame('Queenstown')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Queenstown</h3><p class="text-xs text-white/30 italic">纯净荒野的召唤</p></div>
-                <span class="text-blue-500">→</span>
-            </div>
-             <div class="glass p-8 rounded-3xl flex justify-between items-center opacity-40">
-                <div><h3 class="text-lg font-medium">Silicon Valley</h3><p class="text-xs text-white/30 italic">数字脉冲 (锁定)</p></div>
-                <span>🔒</span>
-            </div>
-        </div>
-        <button onclick="switchView('view-hero')" class="mt-12 w-full text-[10px] tracking-widest text-white/20 uppercase">← 返回终端</button>
-    </section>
+← 返回终端
+</div>
+</section>
+<!-- GAME -->
+<section id="game"
+class="hidden min-h-screen px-6 py-10">
+<div class="max-w-5xl mx-auto w-full">
+<div class="flex justify-between items-center mb-10">
+<div>
+<p id="gameCategory"
+class="text-blue-300/70 uppercase text-xs tracking-[0.3em]">
+Sync
+</p>
+<h2 class="text-3xl font-light mt-2">
+意识同步
+</h2>
+</div>
+<div class="text-right">
+<p class="text-white/30 text-xs mb-2">
+同步进度
+</p>
+<div class="w-40 h-2 bg-white/10 rounded-full overflow-hidden">
+<div id="progressBar"
+class="h-full bg-blue-400 progress-glow rounded-full w-0 transition-all duration-500">
+</div>
+</div>
+</div>
+</div>
+<div id="gameGrid"
+class="grid grid-cols-2 md:grid-cols-4 gap-4">
+</div>
 
-    <section id="view-game" class="hidden z-10 w-full max-w-md">
-        <div class="flex justify-between items-center mb-12 px-2">
-            <div id="game-title" class="text-xs tracking-widest text-blue-400/60 uppercase">Syncing...</div>
-            <div class="text-[10px] text-white/20 uppercase">Sync <span id="progress-text">0</span>%</div>
-        </div>
-        <div id="game-grid" class="grid grid-cols-2 gap-4"></div>
-    </section>
-
-    <script>
-        // 扩展词库：你可以随时在这里增加单词
-        const database = {
-            'Origins': [
-                { en: 'Zenith', cn: '顶点/巅峰' },
-                { en: 'Ethereal', cn: '优雅空灵的' },
-                { en: 'Perspective', cn: '视角/观点' },
-                { en: 'Manifesto', cn: '宣言' }
-            ],
-            'Manhattan': [
-                { en: 'Skyscraper', cn: '摩天大楼' },
-                { en: 'Metropolis', cn: '大都市' },
-                { en: 'Ambition', cn: '野心/抱负' },
-                { en: 'Hustle', cn: '忙碌/拼搏' }
-            ],
-            'Queenstown': [
-                { en: 'Wilderness', cn: '荒野/自然' },
-                { en: 'Serene', cn: '宁静的' },
-                { en: 'Adrenaline', cn: '肾上腺素' },
-                { en: 'Landscape', cn: '景观/风景' }
-            ]
-        };
-
-        let selected = [];
-        let matches = 0;
-
-        function switchView(id) {
-            ['view-hero', 'view-levels', 'view-game'].forEach(v => document.getElementById(v).classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function initGame(levelId) {
-            const words = database[levelId];
-            if (!words) return;
-            switchView('view-game');
-            document.getElementById('game-title').innerText = `Syncing: ${levelId}`;
-            const grid = document.getElementById('game-grid');
-            grid.innerHTML = '';
-            matches = 0;
-            updateProgress(words.length);
-
-            let cards = [];
-            words.forEach(w => {
-                cards.push({ text: w.en, id: w.en });
-                cards.push({ text: w.cn, id: w.en });
-            });
-            cards.sort(() => Math.random() - 0.5);
-
-            cards.forEach(card => {
-                const div = document.createElement('div');
-                div.className = 'glass p-6 rounded-2xl text-center text-xs font-light min-h-[100px] flex items-center justify-center transition-all';
-                div.innerText = card.text;
-                div.dataset.id = card.id;
-                div.onclick = () => handleTap(div, words.length);
-                grid.appendChild(div);
-            });
-        }
-
-        function handleTap(el, total) {
-            if (selected.length === 2 || el.classList.contains('card-active')) return;
-            el.classList.add('card-active');
-            selected.push(el);
-
-            if (selected.length === 2) {
-                if (selected[0].dataset.id === selected[1].dataset.id) {
-                    setTimeout(() => {
-                        selected.forEach(c => c.classList.add('matched'));
-                        selected = [];
-                        matches++;
-                        updateProgress(total);
-                        if (matches === total) {
-                            setTimeout(() => { switchView('view-levels'); }, 800);
-                        }
-                    }, 400);
-                } else {
-                    setTimeout(() => {
-                        selected.forEach(c => {
-                            c.classList.remove('card-active');
-                            c.classList.add('shake');
-                            setTimeout(() => c.classList.remove('shake'), 300);
-                        });
-                        selected = [];
-                    }, 500);
-                }
-            }
-        }
-
-        function updateProgress(total) {
-            const p = Math.round((matches / total) * 100);
-            document.getElementById('progress-text').innerText = p;
-        }
-    </script>
+← 返回维度
+</div>
+</section>
+<script>
+const database = {
+daily:[
+{en:"Breakfast",cn:"早餐"},
+{en:"Journey",cn:"旅程"},
+{en:"Freedom",cn:"自由"},
+{en:"Memory",cn:"记忆"},
+{en:"Vision",cn:"愿景"},
+{en:"Balance",cn:"平衡"}
+],
+ai:[
+{en:"Algorithm",cn:"算法"},
+{en:"Quantum",cn:"量子的"},
+{en:"Neural",cn:"神经的"},
+{en:"Cybernetic",cn:"控制论的"},
+{en:"Synthetic",cn:"合成的"},
+{en:"Singularity",cn:"奇点"}
+],
+psychology:[
+{en:"Anxiety",cn:"焦虑"},
+{en:"Empathy",cn:"共情"},
+{en:"Subconscious",cn:"潜意识"},
+{en:"Emotion",cn:"情绪"},
+{en:"Perception",cn:"感知"},
+{en:"Trauma",cn:"创伤"}
+],
+travel:[
+{en:"Passport",cn:"护照"},
+{en:"Departure",cn:"出发"},
+{en:"Destination",cn:"目的地"},
+{en:"Luggage",cn:"行李"},
+{en:"Journey",cn:"旅行"},
+{en:"Transit",cn:"中转"}
+]
+};
+let selected = [];
+let matched = 0;
+function showDashboard(){
+hideAll();
+document.getElementById("dashboard").classList.remove("hidden");
+}
+function backHero(){
+hideAll();
+document.getElementById("hero").classList.remove("hidden");
+}
+function startGame(category){
+hideAll();
+document.getElementById("game").classList.remove("hidden");
+document.getElementById("gameCategory").innerText =
+category.toUpperCase();
+const words = database[category];
+let cards = [];
+words.forEach(w=>{
+cards.push({text:w.en,id:w.en});
+cards.push({text:w.cn,id:w.en});
+});
+cards.sort(()=>Math.random()-0.5);
+const grid = document.getElementById("gameGrid");
+grid.innerHTML = "";
+matched = 0;
+updateProgress(words.length);
+cards.forEach(card=>{
+const div = document.createElement("div");
+div.className =
+"match-card glass rounded-3xl min-h-[120px] flex items-center justify-center text-center px-4 py-6 text-sm md:text-base";
+div.innerText = card.text;
+div.dataset.id = card.id;
+div.onclick = ()=>selectCard(div,words.length);
+grid.appendChild(div);
+});
+}
+function selectCard(el,total){
+if(selected.length >= 2) return;
+if(el.classList.contains("active")) return;
+el.classList.add("active");
+selected.push(el);
+if(selected.length === 2){
+if(selected[0].dataset.id === selected[1].dataset.id){
+setTimeout(()=>{
+selected.forEach(card=>{
+card.classList.remove("active");
+card.classList.add("correct");
+});
+matched++;
+updateProgress(total);
+selected = [];
+if(matched === total){
+setTimeout(()=>{
+showDashboard();
+},1200);
+}
+},400);
+}else{
+setTimeout(()=>{
+selected.forEach(card=>{
+card.classList.remove("active");
+card.classList.add("wrong");
+setTimeout(()=>{
+card.classList.remove("wrong");
+},300);
+});
+selected=[];
+},500);
+}
+}
+}
+function updateProgress(total){
+const percent = (matched/total)*100;
+document.getElementById("progressBar").style.width =
+percent + "%";
+}
+function hideAll(){
+["hero","dashboard","game"].forEach(id=>{
+document.getElementById(id).classList.add("hidden");
+});
+}
+function createParticles(){
+const container = document.getElementById("particles");
+for(let i=0;i<60;i++){
+const p = document.createElement("div");
+p.className = "particle";
+p.style.left = Math.random()*100 + "vw";
+p.style.animationDuration =
+(10 + Math.random()*20) + "s";
+p.style.animationDelay =
+Math.random()*10 + "s";
+container.appendChild(p);
+}
+}
+createParticles();
+</script>
 </body>
 </html>
