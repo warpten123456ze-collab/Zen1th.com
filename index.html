@@ -1,156 +1,188 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zen1th | Cinematic Learning</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root { --accent: #405cff; }
-        body { background-color: #050505; color: white; font-family: -apple-system, sans-serif; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .card-active { background: rgba(64, 92, 255, 0.15); border-color: var(--accent); box-shadow: 0 0 20px rgba(64, 92, 255, 0.1); transform: scale(1.02); }
-        .matched { opacity: 0; transform: scale(0.8); pointer-events: none; transition: all 0.5s ease; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-        .shake { animation: shake 0.3s ease-in-out; }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col items-center justify-between py-12 px-6">
-    <div class="fixed top-[-10%] right-[-10%] w-[80vw] h-[80vw] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+'use client';
 
-    <section id="view-hero" class="z-10 flex flex-col items-center justify-center flex-grow text-center w-full">
-        <h1 class="text-6xl font-extralight tracking-[0.4em] mb-4">ZEN1TH</h1>
-        <p class="text-[10px] tracking-[0.8em] text-blue-400/40 uppercase mb-24">Unlock Your World</p>
-        <button onclick="switchView('view-levels')" class="px-16 py-4 rounded-full bg-white text-black font-medium active:scale-95 transition-all">进入系统</button>
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// --- 词库配置：融合学术冲刺与未来旅途 ---
+const categories = [
+  { id: 'academic', name: '学术领域', subtitle: 'T-Minus 35 Days', icon: '⏳', color: 'from-blue-900/40 to-black' },
+  { id: 'travel-nz', name: '旅行英语', subtitle: 'Queenstown Vibes', icon: '🏔️', color: 'from-teal-900/40 to-black' },
+  { id: 'travel-us', name: '留学与生活', subtitle: 'American Dream', icon: '🗽', color: 'from-purple-900/40 to-black' },
+  { id: 'mindset', name: '心理学', subtitle: 'Live in the moment', icon: '🧠', color: 'from-indigo-900/40 to-black' }
+];
+
+const mockVocabulary = [
+  { en: 'Autonomy', cn: '自主权' },
+  { en: 'Resilience', cn: '韧性' },
+  { en: 'Horizon', cn: '地平线' }
+];
+
+export default function ZenithCinematic() {
+  const [view, setView] = useState<'hero' | 'categories' | 'game'>('hero');
+  const [xp, setXp] = useState(0);
+  const [combo, setCombo] = useState(0);
+
+  // 模拟极致沉浸的背景氛围
+  return (
+    <div className="min-h-screen bg-[#050505] text-white overflow-hidden font-sans selection:bg-white/20">
+      
+      {/* 动态电影级背景与光晕 */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-blue-600/10 rounded-full blur-[120px]"
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.15, 0.05] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-purple-600/10 rounded-full blur-[120px]"
+        />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay"></div>
+      </div>
+
+      <AnimatePresence mode="wait">
         
-        <div class="mt-32 opacity-30 hover:opacity-100 transition-opacity duration-500">
-            <p class="text-[10px] tracking-[0.3em] mb-2 uppercase italic">你的回响，是Zen1th的基石</p>
-            <a href="mailto:wjszzh888@163.com" class="text-[11px] font-light border-b border-white/20 pb-1">wjszzh888@163.com</a>
-        </div>
-    </section>
+        {/* --- 首页 (Hero Section) --- */}
+        {view === 'hero' && (
+          <motion.section 
+            key="hero"
+            initial={{ opacity: 0, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 1.05, filter: 'blur(20px)' }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6"
+          >
+            <motion.h1 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 1 }}
+              className="text-7xl md:text-9xl font-extralight tracking-[0.3em] mb-6 drop-shadow-2xl text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50"
+            >
+              臻一
+            </motion.h1>
+            <p className="text-xs md:text-sm tracking-[1em] text-blue-300/40 uppercase mb-24 font-light">
+              在沉浸与游戏中重新认识英语
+            </p>
 
-    <section id="view-levels" class="hidden z-10 w-full max-w-md pt-10">
-        <h2 class="text-xl font-light tracking-widest mb-12 text-center text-white/60 uppercase">同步维度</h2>
-        <div class="grid grid-cols-1 gap-4 overflow-y-auto max-h-[60vh] pr-2">
-            <div onclick="initGame('Origins')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Origins</h3><p class="text-xs text-white/30 italic">基础意识同步</p></div>
-                <span class="text-blue-500">→</span>
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(255,255,255,0.1)' }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setView('categories')}
+              className="px-12 py-4 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-white font-light tracking-[0.5em] uppercase hover:bg-white/10 transition-colors"
+            >
+              开始学习
+            </motion.button>
+          </motion.section>
+        )}
+
+        {/* --- 类别选择 (Categories) --- */}
+        {view === 'categories' && (
+          <motion.section
+            key="categories"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -40 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 w-full max-w-5xl mx-auto min-h-screen pt-32 px-6"
+          >
+            <h2 className="text-sm font-light tracking-[0.6em] text-white/40 uppercase mb-16 text-center">
+              Select Your Dimension
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {categories.map((cat, i) => (
+                <motion.div
+                  key={cat.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1, duration: 0.8 }}
+                  whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.08)' }}
+                  onClick={() => setView('game')}
+                  className={`p-8 rounded-3xl cursor-pointer border border-white/5 bg-white/[0.02] backdrop-blur-3xl bg-gradient-to-b ${cat.color} hover:border-white/20 transition-all group`}
+                >
+                  <div className="text-4xl mb-6 opacity-60 group-hover:opacity-100 transition-opacity">{cat.icon}</div>
+                  <h3 className="text-xl font-light tracking-wider mb-2">{cat.name}</h3>
+                  <p className="text-[10px] tracking-widest text-white/30 uppercase">{cat.subtitle}</p>
+                </motion.div>
+              ))}
             </div>
-            <div onclick="initGame('Manhattan')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Manhattan</h3><p class="text-xs text-white/30 italic">钢铁森林的意志</p></div>
-                <span class="text-blue-500">→</span>
+            
+            <button onClick={() => setView('hero')} className="fixed bottom-12 left-1/2 -translate-x-1/2 text-[10px] tracking-widest text-white/20 hover:text-white/60 transition-colors uppercase">
+              ← 返回主轴
+            </button>
+          </motion.section>
+        )}
+
+        {/* --- 核心游戏界面 (Gameplay) --- */}
+        {view === 'game' && (
+          <motion.section
+            key="game"
+            initial={{ opacity: 0, filter: 'blur(20px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="relative z-10 flex flex-col min-h-screen px-6 py-12 max-w-4xl mx-auto"
+          >
+            {/* Top Bar */}
+            <header className="flex justify-between items-end mb-20 border-b border-white/10 pb-6">
+              <div>
+                <div className="text-[10px] tracking-[0.4em] text-blue-400/60 uppercase mb-2">Syncing Dimension</div>
+                <h2 className="text-2xl font-light tracking-widest">学术领域</h2>
+              </div>
+              <div className="text-right flex gap-8">
+                <div>
+                  <div className="text-[9px] tracking-widest text-white/30 uppercase mb-1">Combo</div>
+                  <div className="text-xl font-light text-white/80">x{combo}</div>
+                </div>
+                <div>
+                  <div className="text-[9px] tracking-widest text-white/30 uppercase mb-1">Level</div>
+                  <div className="text-xl font-light text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Zenith Mind</div>
+                </div>
+              </div>
+            </header>
+
+            {/* Matching Arena */}
+            <div className="flex-grow flex flex-col md:flex-row gap-12 md:gap-24 items-center justify-center">
+              
+              {/* Draggable English Cards */}
+              <div className="flex flex-col gap-6 w-full md:w-1/2">
+                {mockVocabulary.map((word) => (
+                  <motion.div
+                    key={word.en}
+                    drag
+                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                    dragElastic={0.2}
+                    whileDrag={{ scale: 1.05, boxShadow: '0 20px 40px rgba(64, 92, 255, 0.2)', cursor: 'grabbing' }}
+                    className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl text-center cursor-grab active:border-blue-500/50 transition-colors"
+                  >
+                    <span className="text-lg font-light tracking-wide">{word.en}</span>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Target Chinese Cards */}
+              <div className="flex flex-col gap-6 w-full md:w-1/2 opacity-60">
+                {mockVocabulary.map((word) => (
+                  <div key={word.cn} className="p-6 rounded-2xl border border-dashed border-white/20 text-center bg-transparent">
+                    <span className="text-lg font-light tracking-widest">{word.cn}</span>
+                  </div>
+                ))}
+              </div>
+
             </div>
-            <div onclick="initGame('Queenstown')" class="glass p-8 rounded-3xl flex justify-between items-center active:scale-95 transition-all">
-                <div><h3 class="text-lg font-medium">Queenstown</h3><p class="text-xs text-white/30 italic">纯净荒野的召唤</p></div>
-                <span class="text-blue-500">→</span>
-            </div>
-             <div class="glass p-8 rounded-3xl flex justify-between items-center opacity-40">
-                <div><h3 class="text-lg font-medium">Silicon Valley</h3><p class="text-xs text-white/30 italic">数字脉冲 (锁定)</p></div>
-                <span>🔒</span>
-            </div>
-        </div>
-        <button onclick="switchView('view-hero')" class="mt-12 w-full text-[10px] tracking-widest text-white/20 uppercase">← 返回终端</button>
-    </section>
 
-    <section id="view-game" class="hidden z-10 w-full max-w-md">
-        <div class="flex justify-between items-center mb-12 px-2">
-            <div id="game-title" class="text-xs tracking-widest text-blue-400/60 uppercase">Syncing...</div>
-            <div class="text-[10px] text-white/20 uppercase">Sync <span id="progress-text">0</span>%</div>
-        </div>
-        <div id="game-grid" class="grid grid-cols-2 gap-4"></div>
-    </section>
-
-    <script>
-        // 扩展词库：你可以随时在这里增加单词
-        const database = {
-            'Origins': [
-                { en: 'Zenith', cn: '顶点/巅峰' },
-                { en: 'Ethereal', cn: '优雅空灵的' },
-                { en: 'Perspective', cn: '视角/观点' },
-                { en: 'Manifesto', cn: '宣言' }
-            ],
-            'Manhattan': [
-                { en: 'Skyscraper', cn: '摩天大楼' },
-                { en: 'Metropolis', cn: '大都市' },
-                { en: 'Ambition', cn: '野心/抱负' },
-                { en: 'Hustle', cn: '忙碌/拼搏' }
-            ],
-            'Queenstown': [
-                { en: 'Wilderness', cn: '荒野/自然' },
-                { en: 'Serene', cn: '宁静的' },
-                { en: 'Adrenaline', cn: '肾上腺素' },
-                { en: 'Landscape', cn: '景观/风景' }
-            ]
-        };
-
-        let selected = [];
-        let matches = 0;
-
-        function switchView(id) {
-            ['view-hero', 'view-levels', 'view-game'].forEach(v => document.getElementById(v).classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function initGame(levelId) {
-            const words = database[levelId];
-            if (!words) return;
-            switchView('view-game');
-            document.getElementById('game-title').innerText = `Syncing: ${levelId}`;
-            const grid = document.getElementById('game-grid');
-            grid.innerHTML = '';
-            matches = 0;
-            updateProgress(words.length);
-
-            let cards = [];
-            words.forEach(w => {
-                cards.push({ text: w.en, id: w.en });
-                cards.push({ text: w.cn, id: w.en });
-            });
-            cards.sort(() => Math.random() - 0.5);
-
-            cards.forEach(card => {
-                const div = document.createElement('div');
-                div.className = 'glass p-6 rounded-2xl text-center text-xs font-light min-h-[100px] flex items-center justify-center transition-all';
-                div.innerText = card.text;
-                div.dataset.id = card.id;
-                div.onclick = () => handleTap(div, words.length);
-                grid.appendChild(div);
-            });
-        }
-
-        function handleTap(el, total) {
-            if (selected.length === 2 || el.classList.contains('card-active')) return;
-            el.classList.add('card-active');
-            selected.push(el);
-
-            if (selected.length === 2) {
-                if (selected[0].dataset.id === selected[1].dataset.id) {
-                    setTimeout(() => {
-                        selected.forEach(c => c.classList.add('matched'));
-                        selected = [];
-                        matches++;
-                        updateProgress(total);
-                        if (matches === total) {
-                            setTimeout(() => { switchView('view-levels'); }, 800);
-                        }
-                    }, 400);
-                } else {
-                    setTimeout(() => {
-                        selected.forEach(c => {
-                            c.classList.remove('card-active');
-                            c.classList.add('shake');
-                            setTimeout(() => c.classList.remove('shake'), 300);
-                        });
-                        selected = [];
-                    }, 500);
-                }
-            }
-        }
-
-        function updateProgress(total) {
-            const p = Math.round((matches / total) * 100);
-            document.getElementById('progress-text').innerText = p;
-        }
-    </script>
-</body>
-</html>
+            {/* Bottom Controls */}
+            <footer className="mt-auto pt-12 flex justify-between items-center opacity-40 hover:opacity-100 transition-opacity">
+               <button onClick={() => setView('categories')} className="text-[10px] tracking-widest uppercase">← Abort Sync</button>
+               <div className="flex gap-4">
+                 <button className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-xs">🎵</button>
+                 <button className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-xs">🔊</button>
+               </div>
+            </footer>
+          </motion.section>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
