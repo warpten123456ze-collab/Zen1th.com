@@ -1,74 +1,100 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>ZEN1TH</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
+
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
 }
+
 body{
 font-family:'Inter',sans-serif;
 background:#050507;
-overflow:hidden;
 color:white;
+overflow:hidden;
 }
+
 ::-webkit-scrollbar{
 display:none;
 }
+
+.page{
+display:none;
+width:100%;
+height:100vh;
+overflow-y:auto;
+position:relative;
+z-index:10;
+}
+
+.page.active{
+display:flex;
+}
+
 .bg-layer{
 position:fixed;
 inset:0;
 overflow:hidden;
-z-index:-10;
+z-index:-1;
 pointer-events:none;
 }
-.gradient-1,
-.gradient-2,
-.gradient-3{
+
+.gradient{
 position:absolute;
 border-radius:9999px;
 filter:blur(120px);
 opacity:.22;
-animation:float 12s ease-in-out infinite;
+animation:float 14s ease-in-out infinite;
 }
-.gradient-1{
+
+.g1{
 width:40vw;
 height:40vw;
 background:#4060ff;
 top:-10%;
 left:-10%;
 }
-.gradient-2{
+
+.g2{
 width:35vw;
 height:35vw;
 background:#8b5cf6;
 bottom:-10%;
 right:-10%;
-animation-delay:2s;
+animation-delay:3s;
 }
-.gradient-3{
-width:30vw;
-height:30vw;
-background:#1e3a8a;
+
+.g3{
+width:28vw;
+height:28vw;
+background:#1d4ed8;
 top:40%;
 left:35%;
-animation-delay:4s;
+animation-delay:6s;
 }
+
 @keyframes float{
 0%,100%{
-transform:translateY(0px) translateX(0px);
+transform:translate(0,0);
 }
 50%{
-transform:translateY(-30px) translateX(20px);
+transform:translate(20px,-30px);
 }
 }
+
 .glass{
 background:rgba(255,255,255,.04);
 backdrop-filter:blur(20px);
@@ -77,41 +103,69 @@ box-shadow:
 0 0 40px rgba(255,255,255,.03),
 0 0 80px rgba(64,92,255,.05);
 }
+
 .card{
-transition:all .5s ease;
+transition:.45s ease;
 cursor:pointer;
 }
+
 .card:hover{
 transform:translateY(-6px) scale(1.02);
 border-color:rgba(96,165,250,.4);
 box-shadow:
-0 0 40px rgba(64,92,255,.12),
+0 0 40px rgba(64,92,255,.14),
 0 0 120px rgba(139,92,246,.08);
 }
-.fade-in{
-animation:fade 1.2s ease forwards;
+
+.hero-title{
+letter-spacing:.45em;
+font-weight:200;
 }
-@keyframes fade{
-from{
+
+.match-card{
+transition:.3s ease;
+cursor:pointer;
+min-height:120px;
+}
+
+.match-card.active{
+border-color:#60a5fa;
+background:rgba(64,92,255,.14);
+transform:scale(1.03);
+}
+
+.match-card.correct{
 opacity:0;
-transform:translateY(20px);
+transform:scale(.7);
+pointer-events:none;
 }
-to{
-opacity:1;
-transform:translateY(0);
+
+.match-card.wrong{
+animation:shake .35s ease;
 }
+
+@keyframes shake{
+0%,100%{transform:translateX(0);}
+25%{transform:translateX(-4px);}
+75%{transform:translateX(4px);}
 }
+
+.progress-glow{
+box-shadow:0 0 20px rgba(96,165,250,.5);
+}
+
 .particle{
 position:absolute;
 width:3px;
 height:3px;
 background:white;
 border-radius:9999px;
-opacity:.2;
-animation:particleFloat linear infinite;
+opacity:.15;
+animation:particle linear infinite;
 pointer-events:none;
 }
-@keyframes particleFloat{
+
+@keyframes particle{
 from{
 transform:translateY(100vh);
 opacity:0;
@@ -124,180 +178,231 @@ transform:translateY(-10vh);
 opacity:0;
 }
 }
-.hero-title{
-letter-spacing:.5em;
-font-weight:200;
+
+button{
+outline:none;
+border:none;
 }
-.match-card{
-transition:all .35s ease;
-cursor:pointer;
-}
-.match-card.active{
-border-color:#60a5fa;
-background:rgba(64,92,255,.12);
-transform:scale(1.03);
-}
-.match-card.correct{
-opacity:0;
-transform:scale(.7);
-pointer-events:none;
-}
-.match-card.wrong{
-animation:shake .35s ease;
-}
-@keyframes shake{
-0%,100%{transform:translateX(0);}
-25%{transform:translateX(-4px);}
-75%{transform:translateX(4px);}
-}
-.progress-glow{
-box-shadow:0 0 20px rgba(96,165,250,.5);
-}
+
 </style>
 </head>
+
 <body>
+
+<!-- BACKGROUND -->
+
 <div class="bg-layer">
-<div class="gradient-1"></div>
-<div class="gradient-2"></div>
-<div class="gradient-3"></div>
+
+<div class="gradient g1"></div>
+<div class="gradient g2"></div>
+<div class="gradient g3"></div>
+
+<div id="particles"></div>
+
 </div>
-<div id="particles" style="pointer-events:none;"></div>
+
 <!-- HERO -->
-<section id="hero"
-class="relative z-10 min-h-screen flex flex-col justify-center items-center px-6 text-center fade-in">
+
+<section id="heroPage"
+class="page active flex-col justify-center items-center text-center px-6">
+
 <h1 class="hero-title text-5xl md:text-7xl mb-6">
 ZEN1TH
 </h1>
+
 <p class="text-blue-300/60 tracking-[0.4em] uppercase text-[11px] mb-10">
 Unlock Your World
 </p>
+
 <p class="max-w-md text-white/50 text-sm leading-7 mb-16">
 在沉浸、氛围与游戏中重新认识英语。
 </p>
+
 <div class="flex flex-col md:flex-row gap-4 w-full max-w-sm">
 
+<button
+id="enterBtn"
+class="glass card rounded-full py-4 w-full">
 进入系统
-<button class="glass card rounded-full py-4 w-full text-blue-300">
+</button>
+
+<button
+id="dailyBtn"
+class="glass card rounded-full py-4 w-full text-blue-300">
 每日挑战
 </button>
+
 </div>
-<div class="absolute bottom-10 text-center opacity-40">
-<p class="text-[10px] tracking-[0.3em] mb-2 italic">
+
+<div class="absolute bottom-10 opacity-40 text-center">
+
+<p class="text-[10px] tracking-[0.3em] italic">
 你的回响，是 Zen1th 的基石
 </p>
+
 </div>
+
 </section>
+
 <!-- DASHBOARD -->
-<section id="dashboard"
-class="relative z-10 hidden min-h-screen px-6 py-12 overflow-y-auto">
-<div class="max-w-6xl mx-auto">
+
+<section id="dashboardPage"
+class="page flex-col px-6 py-12">
+
+<div class="max-w-6xl mx-auto w-full">
+
 <div class="mb-14">
+
 <h2 class="text-3xl md:text-5xl font-extralight mb-3">
 同步维度
 </h2>
+
 <p class="text-white/40">
 选择你的意识领域。
 </p>
+
 </div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-<div onclick="startGame('daily')"
-class="glass card rounded-3xl p-8">
+
+<div class="glass card rounded-3xl p-8 category-card"
+data-category="daily">
+
 <p class="text-xs text-blue-300/60 mb-4 uppercase">
 Daily
 </p>
+
 <h3 class="text-2xl font-light mb-3">
 每日挑战
 </h3>
-<p class="text-white/40 leading-7 text-sm">
+
+<p class="text-white/40 text-sm leading-7">
 进入今日同步循环。
 </p>
+
 </div>
-<div onclick="startGame('ai')"
-class="glass card rounded-3xl p-8">
+
+<div class="glass card rounded-3xl p-8 category-card"
+data-category="ai">
+
 <p class="text-xs text-purple-300/60 mb-4 uppercase">
 AI & Future
 </p>
+
 <h3 class="text-2xl font-light mb-3">
 AI 与未来
 </h3>
-<p class="text-white/40 leading-7 text-sm">
+
+<p class="text-white/40 text-sm leading-7">
 探索未来文明语言。
 </p>
+
 </div>
-<div onclick="startGame('psychology')"
-class="glass card rounded-3xl p-8">
+
+<div class="glass card rounded-3xl p-8 category-card"
+data-category="psychology">
+
 <p class="text-xs text-cyan-300/60 mb-4 uppercase">
 Psychology
 </p>
+
 <h3 class="text-2xl font-light mb-3">
 心理学
 </h3>
-<p class="text-white/40 leading-7 text-sm">
+
+<p class="text-white/40 text-sm leading-7">
 理解情绪与意识。
 </p>
+
 </div>
-<div onclick="startGame('travel')"
-class="glass card rounded-3xl p-8">
+
+<div class="glass card rounded-3xl p-8 category-card"
+data-category="travel">
+
 <p class="text-xs text-orange-300/60 mb-4 uppercase">
 Travel
 </p>
+
 <h3 class="text-2xl font-light mb-3">
 旅行英语
 </h3>
-<p class="text-white/40 leading-7 text-sm">
+
+<p class="text-white/40 text-sm leading-7">
 连接世界与未知。
 </p>
-</div>
-<div class="glass rounded-3xl p-8 opacity-40">
-<p class="text-xs mb-4 uppercase">
-Immersive Mode
-</p>
-<h3 class="text-2xl font-light mb-3">
-沉浸模式
-</h3>
-<p class="text-white/40 text-sm">
-即将开放。
-</p>
-</div>
+
 </div>
 
-← 返回终端
 </div>
+
+<button
+id="backHeroBtn"
+class="mt-14 text-white/30 hover:text-white transition">
+← 返回终端
+</button>
+
+</div>
+
 </section>
+
 <!-- GAME -->
-<section id="game"
-class="relative z-10 hidden min-h-screen px-6 py-10 overflow-y-auto">
+
+<section id="gamePage"
+class="page flex-col px-6 py-10">
+
 <div class="max-w-5xl mx-auto w-full">
+
 <div class="flex justify-between items-center mb-10">
+
 <div>
+
 <p id="gameCategory"
 class="text-blue-300/70 uppercase text-xs tracking-[0.3em]">
 SYNC
 </p>
+
 <h2 class="text-3xl font-light mt-2">
 意识同步
 </h2>
+
 </div>
+
 <div class="text-right">
+
 <p class="text-white/30 text-xs mb-2">
 同步进度
 </p>
+
 <div class="w-40 h-2 bg-white/10 rounded-full overflow-hidden">
+
 <div id="progressBar"
 class="h-full bg-blue-400 progress-glow rounded-full w-0 transition-all duration-500">
 </div>
+
 </div>
+
 </div>
+
 </div>
+
 <div id="gameGrid"
 class="grid grid-cols-2 md:grid-cols-4 gap-4">
 </div>
 
+<button
+id="backDashboardBtn"
+class="mt-10 text-white/30 hover:text-white transition">
 ← 返回维度
+</button>
+
 </div>
+
 </section>
+
 <script>
+
 const database = {
+
 daily:[
 {en:"Breakfast",cn:"早餐"},
 {en:"Journey",cn:"旅程"},
@@ -306,6 +411,7 @@ daily:[
 {en:"Vision",cn:"愿景"},
 {en:"Balance",cn:"平衡"}
 ],
+
 ai:[
 {en:"Algorithm",cn:"算法"},
 {en:"Quantum",cn:"量子的"},
@@ -314,6 +420,7 @@ ai:[
 {en:"Synthetic",cn:"合成的"},
 {en:"Singularity",cn:"奇点"}
 ],
+
 psychology:[
 {en:"Anxiety",cn:"焦虑"},
 {en:"Empathy",cn:"共情"},
@@ -322,6 +429,7 @@ psychology:[
 {en:"Perception",cn:"感知"},
 {en:"Trauma",cn:"创伤"}
 ],
+
 travel:[
 {en:"Passport",cn:"护照"},
 {en:"Departure",cn:"出发"},
@@ -330,102 +438,225 @@ travel:[
 {en:"Journey",cn:"旅行"},
 {en:"Transit",cn:"中转"}
 ]
+
 };
+
+const heroPage = document.getElementById("heroPage");
+const dashboardPage = document.getElementById("dashboardPage");
+const gamePage = document.getElementById("gamePage");
+
+const gameGrid = document.getElementById("gameGrid");
+const progressBar = document.getElementById("progressBar");
+const gameCategory = document.getElementById("gameCategory");
+
 let selected = [];
 let matched = 0;
-function showDashboard(){
-hideAll();
-document.getElementById("dashboard").classList.remove("hidden");
+
+function switchPage(page){
+
+heroPage.classList.remove("active");
+dashboardPage.classList.remove("active");
+gamePage.classList.remove("active");
+
+page.classList.add("active");
+
 }
-function backHero(){
-hideAll();
-document.getElementById("hero").classList.remove("hidden");
-}
+
+document.getElementById("enterBtn").addEventListener("click",()=>{
+
+switchPage(dashboardPage);
+
+});
+
+document.getElementById("dailyBtn").addEventListener("click",()=>{
+
+startGame("daily");
+
+});
+
+document.getElementById("backHeroBtn").addEventListener("click",()=>{
+
+switchPage(heroPage);
+
+});
+
+document.getElementById("backDashboardBtn").addEventListener("click",()=>{
+
+switchPage(dashboardPage);
+
+});
+
+document.querySelectorAll(".category-card").forEach(card=>{
+
+card.addEventListener("click",()=>{
+
+startGame(card.dataset.category);
+
+});
+
+});
+
 function startGame(category){
-hideAll();
-document.getElementById("game").classList.remove("hidden");
-document.getElementById("gameCategory").innerText =
-category.toUpperCase();
+
+switchPage(gamePage);
+
+gameCategory.innerText = category.toUpperCase();
+
 const words = database[category];
+
 let cards = [];
-words.forEach(w=>{
-cards.push({text:w.en,id:w.en});
-cards.push({text:w.cn,id:w.en});
+
+words.forEach(word=>{
+
+cards.push({
+text:word.en,
+id:word.en
 });
+
+cards.push({
+text:word.cn,
+id:word.en
+});
+
+});
+
 cards.sort(()=>Math.random()-0.5);
-const grid = document.getElementById("gameGrid");
-grid.innerHTML = "";
+
+gameGrid.innerHTML = "";
+
+selected = [];
 matched = 0;
+
 updateProgress(words.length);
+
 cards.forEach(card=>{
+
 const div = document.createElement("div");
+
 div.className =
-"match-card glass rounded-3xl min-h-[120px] flex items-center justify-center text-center px-4 py-6 text-sm md:text-base";
+"match-card glass rounded-3xl flex items-center justify-center text-center px-4 py-6 text-sm md:text-base";
+
 div.innerText = card.text;
+
 div.dataset.id = card.id;
-div.onclick = ()=>selectCard(div,words.length);
-grid.appendChild(div);
+
+div.addEventListener("click",()=>{
+
+selectCard(div,words.length);
+
 });
+
+gameGrid.appendChild(div);
+
+});
+
 }
+
 function selectCard(el,total){
+
 if(selected.length >= 2) return;
+
 if(el.classList.contains("active")) return;
+
+if(el.classList.contains("correct")) return;
+
 el.classList.add("active");
+
 selected.push(el);
+
 if(selected.length === 2){
+
 if(selected[0].dataset.id === selected[1].dataset.id){
+
 setTimeout(()=>{
+
 selected.forEach(card=>{
+
 card.classList.remove("active");
 card.classList.add("correct");
+
 });
+
 matched++;
+
 updateProgress(total);
+
 selected = [];
+
 if(matched === total){
+
 setTimeout(()=>{
-showDashboard();
-},1200);
+
+switchPage(dashboardPage);
+
+},1000);
+
 }
-},400);
+
+},300);
+
 }else{
+
 setTimeout(()=>{
+
 selected.forEach(card=>{
+
 card.classList.remove("active");
 card.classList.add("wrong");
+
 setTimeout(()=>{
+
 card.classList.remove("wrong");
+
 },300);
+
 });
-selected=[];
-},500);
+
+selected = [];
+
+},400);
+
 }
+
 }
+
 }
+
 function updateProgress(total){
+
 const percent = (matched / total) * 100;
-document.getElementById("progressBar").style.width =
-percent + "%";
+
+progressBar.style.width = percent + "%";
+
 }
-function hideAll(){
-["hero","dashboard","game"].forEach(id=>{
-document.getElementById(id).classList.add("hidden");
-});
-}
+
 function createParticles(){
+
 const container = document.getElementById("particles");
-for(let i=0;i<60;i++){
+
+for(let i=0;i<70;i++){
+
 const p = document.createElement("div");
+
 p.className = "particle";
+
 p.style.left = Math.random()*100 + "vw";
+
 p.style.animationDuration =
 (10 + Math.random()*20) + "s";
+
 p.style.animationDelay =
 Math.random()*10 + "s";
+
 container.appendChild(p);
+
 }
+
 }
+
 createParticles();
+
 </script>
+
 </body>
 </html>
