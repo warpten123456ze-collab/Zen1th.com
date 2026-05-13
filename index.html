@@ -78,6 +78,7 @@ box-shadow:
 }
 .card{
 transition:all .5s ease;
+cursor:pointer;
 }
 .card:hover{
 transform:translateY(-6px) scale(1.02);
@@ -261,13 +262,13 @@ Immersive Mode
 </section>
 <!-- GAME -->
 <section id="game"
-class="hidden min-h-screen px-6 py-10">
+class="hidden min-h-screen px-6 py-10 overflow-y-auto">
 <div class="max-w-5xl mx-auto w-full">
 <div class="flex justify-between items-center mb-10">
 <div>
 <p id="gameCategory"
 class="text-blue-300/70 uppercase text-xs tracking-[0.3em]">
-Sync
+SYNC
 </p>
 <h2 class="text-3xl font-light mt-2">
 意识同步
@@ -398,7 +399,7 @@ selected=[];
 }
 }
 function updateProgress(total){
-const percent = (matched/total)*100;
+const percent = (matched / total) * 100;
 document.getElementById("progressBar").style.width =
 percent + "%";
 }
