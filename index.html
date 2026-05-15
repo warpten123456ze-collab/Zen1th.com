@@ -1,662 +1,681 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zen1th English · Opening</title>
 
-<title>ZEN1TH</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<script src="https://cdn.tailwindcss.com"></script>
+  <!-- 高级字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#ffffff;
+      --glass:rgba(255,255,255,0.08);
+      --border:rgba(255,255,255,0.12);
+      --shadow:rgba(0,0,0,0.45);
+    }
 
-<style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+    body{
+      overflow:hidden;
+      background:#02040a;
+      font-family:'Noto Serif SC', serif;
+      color:white;
+      height:100vh;
+    }
 
-body{
-font-family:'Inter',sans-serif;
-background:#050507;
-color:white;
-overflow:hidden;
-}
+    .background-layer{
+      position:fixed;
+      inset:0;
+      z-index:-10;
+      overflow:hidden;
+      background:
+      radial-gradient(circle at top left, rgba(67, 97, 238, 0.18), transparent 32%),
+      radial-gradient(circle at bottom right, rgba(131, 56, 236, 0.22), transparent 35%),
+      radial-gradient(circle at center, rgba(255,255,255,0.03), transparent 55%),
+      linear-gradient(145deg,#02040a 0%,#050816 40%,#070b19 70%,#010308 100%);
+    }
 
-::-webkit-scrollbar{
-display:none;
-}
+    .ambient-glow{
+      position:absolute;
+      width:1200px;
+      height:1200px;
+      border-radius:50%;
+      filter:blur(120px);
+      opacity:.18;
+      animation:breathe 10s ease-in-out infinite;
+    }
 
-.page{
-display:none;
-width:100%;
-height:100vh;
-overflow-y:auto;
-position:relative;
-z-index:10;
-}
+    .glow-1{
+      background:#335dff;
+      top:-20%;
+      left:-10%;
+    }
 
-.page.active{
-display:flex;
-}
+    .glow-2{
+      background:#8b5cf6;
+      bottom:-35%;
+      right:-20%;
+      animation-delay:3s;
+    }
 
-.bg-layer{
-position:fixed;
-inset:0;
-overflow:hidden;
-z-index:-1;
-pointer-events:none;
-}
+    @keyframes breathe{
+      0%,100%{
+        transform:scale(1) translateY(0px);
+        opacity:.15;
+      }
+      50%{
+        transform:scale(1.08) translateY(-10px);
+        opacity:.25;
+      }
+    }
 
-.gradient{
-position:absolute;
-border-radius:9999px;
-filter:blur(120px);
-opacity:.22;
-animation:float 14s ease-in-out infinite;
-}
+    .particles::before,
+    .particles::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image:
+      radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px);
+      background-size:80px 80px;
+      opacity:.18;
+      animation:floatStars 40s linear infinite;
+    }
 
-.g1{
-width:40vw;
-height:40vw;
-background:#4060ff;
-top:-10%;
-left:-10%;
-}
+    .particles::after{
+      background-size:120px 120px;
+      opacity:.08;
+      animation-direction:reverse;
+    }
 
-.g2{
-width:35vw;
-height:35vw;
-background:#8b5cf6;
-bottom:-10%;
-right:-10%;
-animation-delay:3s;
-}
+    @keyframes floatStars{
+      from{
+        transform:translateY(0px);
+      }
+      to{
+        transform:translateY(-120px);
+      }
+    }
 
-.g3{
-width:28vw;
-height:28vw;
-background:#1d4ed8;
-top:40%;
-left:35%;
-animation-delay:6s;
-}
+    .page{
+      position:relative;
+      width:100%;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+      transition:
+      transform 1.1s cubic-bezier(.77,0,.18,1),
+      opacity 1s ease,
+      filter 1s ease;
+    }
 
-@keyframes float{
-0%,100%{
-transform:translate(0,0);
-}
-50%{
-transform:translate(20px,-30px);
-}
-}
+    .page.transition-out{
+      transform:scale(1.12);
+      opacity:0;
+      filter:blur(24px);
+    }
 
-.glass{
-background:rgba(255,255,255,.04);
-backdrop-filter:blur(20px);
-border:1px solid rgba(255,255,255,.08);
-box-shadow:
-0 0 40px rgba(255,255,255,.03),
-0 0 80px rgba(64,92,255,.05);
-}
+    .skip-btn{
+      position:fixed;
+      top:30px;
+      right:30px;
+      z-index:999;
+      padding:14px 26px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(255,255,255,0.06);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      color:rgba(255,255,255,0.88);
+      font-size:14px;
+      letter-spacing:2px;
+      overflow:hidden;
+      transition:.45s ease;
+      cursor:pointer;
+      box-shadow:
+      0 10px 40px rgba(0,0,0,.35),
+      inset 0 0 0 rgba(255,255,255,0);
+    }
 
-.card{
-transition:.45s ease;
-cursor:pointer;
-}
+    .skip-btn::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.22),
+        transparent
+      );
+      transform:translateX(-140%);
+      transition:1s;
+    }
 
-.card:hover{
-transform:translateY(-6px) scale(1.02);
-border-color:rgba(96,165,250,.4);
-box-shadow:
-0 0 40px rgba(64,92,255,.14),
-0 0 120px rgba(139,92,246,.08);
-}
+    .skip-btn:hover::before{
+      transform:translateX(140%);
+    }
 
-.hero-title{
-letter-spacing:.45em;
-font-weight:200;
-}
+    .skip-btn:hover{
+      transform:translateY(-2px) scale(1.02);
+      box-shadow:
+      0 0 30px rgba(255,255,255,.08),
+      0 10px 60px rgba(85,120,255,.22);
+      border-color:rgba(255,255,255,.28);
+    }
 
-.match-card{
-transition:.3s ease;
-cursor:pointer;
-min-height:120px;
-}
+    .hero-container{
+      width:100%;
+      max-width:1450px;
+      text-align:center;
+      position:relative;
+      z-index:2;
+    }
 
-.match-card.active{
-border-color:#60a5fa;
-background:rgba(64,92,255,.14);
-transform:scale(1.03);
-}
+    .subtitle{
+      font-size:15px;
+      letter-spacing:6px;
+      color:rgba(255,255,255,.45);
+      margin-bottom:28px;
+      opacity:0;
+      animation:fadeUp 1s ease forwards;
+    }
 
-.match-card.correct{
-opacity:0;
-transform:scale(.7);
-pointer-events:none;
-}
+    .hero-title{
+      font-family:'Cormorant Garamond', serif;
+      font-size:clamp(58px, 7vw, 110px);
+      line-height:1.08;
+      font-weight:600;
+      letter-spacing:2px;
+      margin-bottom:26px;
+      position:relative;
+      overflow:hidden;
+    }
 
-.match-card.wrong{
-animation:shake .35s ease;
-}
+    .hero-title span{
+      display:inline-block;
+      opacity:0;
+      transform:translateY(60px);
+      animation:letterReveal .9s forwards;
+      text-shadow:
+      0 5px 30px rgba(255,255,255,.08),
+      0 2px 10px rgba(255,255,255,.05);
+      background:linear-gradient(
+      to bottom,
+      #ffffff,
+      #d7def7 55%,
+      #8b95b7
+      );
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
 
-@keyframes shake{
-0%,100%{transform:translateX(0);}
-25%{transform:translateX(-4px);}
-75%{transform:translateX(4px);}
-}
+    .hero-desc{
+      max-width:860px;
+      margin:0 auto;
+      color:rgba(255,255,255,.58);
+      font-size:18px;
+      line-height:2;
+      opacity:0;
+      transform:translateY(30px);
+      animation:fadeUp 1s ease forwards;
+      animation-delay:1.2s;
+    }
 
-.progress-glow{
-box-shadow:0 0 20px rgba(96,165,250,.5);
-}
+    @keyframes letterReveal{
+      to{
+        opacity:1;
+        transform:translateY(0px);
+      }
+    }
 
-.particle{
-position:absolute;
-width:3px;
-height:3px;
-background:white;
-border-radius:9999px;
-opacity:.15;
-animation:particle linear infinite;
-pointer-events:none;
-}
+    @keyframes fadeUp{
+      to{
+        opacity:1;
+        transform:translateY(0px);
+      }
+    }
 
-@keyframes particle{
-from{
-transform:translateY(100vh);
-opacity:0;
-}
-10%{
-opacity:.25;
-}
-to{
-transform:translateY(-10vh);
-opacity:0;
-}
-}
+    .cards-grid{
+      margin-top:80px;
+      display:grid;
+      grid-template-columns:
+      repeat(auto-fit,minmax(240px,1fr));
+      gap:28px;
+      perspective:1600px;
+    }
 
-button{
-outline:none;
-border:none;
-}
+    .motivation-card{
+      position:relative;
+      min-height:240px;
+      padding:34px 30px;
+      border-radius:
+      32px 44px 30px 48px;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(30px);
+      -webkit-backdrop-filter:blur(30px);
+      overflow:hidden;
+      cursor:pointer;
+      transition:
+      transform .55s cubic-bezier(.22,1,.36,1),
+      box-shadow .55s ease,
+      border-color .55s ease;
+      transform-style:preserve-3d;
+      opacity:0;
+      transform:translateY(40px);
+      animation:cardReveal .9s forwards;
+    }
 
-</style>
+    .motivation-card:nth-child(1){animation-delay:1.3s;}
+    .motivation-card:nth-child(2){animation-delay:1.45s;}
+    .motivation-card:nth-child(3){animation-delay:1.6s;}
+    .motivation-card:nth-child(4){animation-delay:1.75s;}
+    .motivation-card:nth-child(5){animation-delay:1.9s;}
+
+    @keyframes cardReveal{
+      to{
+        opacity:1;
+        transform:translateY(0px);
+      }
+    }
+
+    .motivation-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+      linear-gradient(
+        145deg,
+        rgba(255,255,255,0.10),
+        transparent 45%
+      );
+      opacity:.5;
+    }
+
+    .motivation-card::after{
+      content:"";
+      position:absolute;
+      width:240px;
+      height:240px;
+      background:radial-gradient(
+      circle,
+      rgba(255,255,255,.12),
+      transparent 65%
+      );
+      top:-120px;
+      right:-120px;
+      opacity:0;
+      transition:.5s ease;
+    }
+
+    .motivation-card:hover{
+      transform:
+      rotateX(8deg)
+      rotateY(-8deg)
+      translateY(-12px)
+      scale(1.02);
+      border-color:rgba(255,255,255,0.18);
+      box-shadow:
+      0 30px 90px rgba(0,0,0,.45),
+      0 0 40px rgba(88,130,255,.12);
+    }
+
+    .motivation-card:hover::after{
+      opacity:1;
+    }
+
+    .card-tag{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:12px;
+      letter-spacing:2px;
+      color:rgba(255,255,255,.55);
+      margin-bottom:28px;
+    }
+
+    .card-title{
+      font-size:32px;
+      font-weight:600;
+      margin-bottom:16px;
+      color:white;
+      letter-spacing:1px;
+    }
+
+    .card-desc{
+      color:rgba(255,255,255,.55);
+      line-height:1.9;
+      font-size:15px;
+    }
+
+    .ripple{
+      position:fixed;
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      background:rgba(255,255,255,.12);
+      transform:translate(-50%,-50%);
+      pointer-events:none;
+      animation:rippleExpand 1s ease-out forwards;
+      z-index:9999;
+      backdrop-filter:blur(10px);
+    }
+
+    @keyframes rippleExpand{
+      0%{
+        width:0;
+        height:0;
+        opacity:.7;
+      }
+      100%{
+        width:2600px;
+        height:2600px;
+        opacity:0;
+      }
+    }
+
+    .bottom-quote{
+      position:absolute;
+      bottom:30px;
+      left:50%;
+      transform:translateX(-50%);
+      color:rgba(255,255,255,.22);
+      font-size:13px;
+      letter-spacing:4px;
+    }
+
+    @media(max-width:768px){
+
+      body{
+        overflow:auto;
+      }
+
+      .page{
+        height:auto;
+        min-height:100vh;
+        padding:100px 20px 120px;
+      }
+
+      .hero-title{
+        font-size:58px;
+      }
+
+      .hero-desc{
+        font-size:15px;
+        line-height:1.9;
+      }
+
+      .cards-grid{
+        grid-template-columns:1fr;
+      }
+
+      .motivation-card{
+        min-height:200px;
+      }
+
+      .skip-btn{
+        top:20px;
+        right:20px;
+      }
+    }
+
+  </style>
 </head>
 
 <body>
 
-<!-- BACKGROUND -->
+  <div class="background-layer particles">
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+  </div>
 
-<div class="bg-layer">
+  <button class="skip-btn" id="skipBtn">
+    SKIP
+  </button>
 
-<div class="gradient g1"></div>
-<div class="gradient g2"></div>
-<div class="gradient g3"></div>
+  <main class="page" id="page">
+
+    <section class="hero-container">
 
-<div id="particles"></div>
+      <div class="subtitle">
+        ZEN1TH ENGLISH · EXPAND YOUR WORLD
+      </div>
 
-</div>
+      <h1 class="hero-title" id="heroTitle"></h1>
 
-<!-- HERO -->
+      <p class="hero-desc">
+        英语从来不只是考试、单词与语法。<br>
+        它是你接触世界的速度，是你未来选择权的边界。<br>
+        你想通过英语，去抵达怎样的人生？
+      </p>
 
-<section id="heroPage"
-class="page active flex-col justify-center items-center text-center px-6">
+      <div class="cards-grid">
 
-<h1 class="hero-title text-5xl md:text-7xl mb-6">
-ZEN1TH
-</h1>
+        <div class="motivation-card"
+             data-path="vocabulary/gaokao.html"
+             data-type="gaokao">
 
-<p class="text-blue-300/60 tracking-[0.4em] uppercase text-[11px] mb-10">
-Unlock Your World
-</p>
+          <div class="card-tag">ACADEMIC FOUNDATION</div>
 
-<p class="max-w-md text-white/50 text-sm leading-7 mb-16">
-在沉浸、氛围与游戏中重新认识英语。
-</p>
+          <div class="card-title">
+            高考学习
+          </div>
 
-<div class="flex flex-col md:flex-row gap-4 w-full max-w-sm">
+          <div class="card-desc">
+            建立扎实词汇与语法体系，
+            提升阅读速度、完形逻辑与作文表达，
+            为高考冲刺提供长期稳定增长。
+          </div>
+        </div>
 
-<button
-id="enterBtn"
-class="glass card rounded-full py-4 w-full">
-进入系统
-</button>
+        <div class="motivation-card"
+             data-path="vocabulary/cet-postgraduate.html"
+             data-type="cet">
 
-<button
-id="dailyBtn"
-class="glass card rounded-full py-4 w-full text-blue-300">
-每日挑战
-</button>
+          <div class="card-tag">ADVANCED EXAM PATH</div>
 
-</div>
+          <div class="card-title">
+            大学四六级考研
+          </div>
 
-<div class="absolute bottom-10 opacity-40 text-center">
+          <div class="card-desc">
+            面向大学阶段与研究生考试，
+            构建高频词库、长难句分析、
+            学术阅读与写作体系。
+          </div>
+        </div>
 
-<p class="text-[10px] tracking-[0.3em] italic">
-你的回响，是 Zen1th 的基石
-</p>
+        <div class="motivation-card"
+             data-path="vocabulary/ielts-toefl.html"
+             data-type="ielts">
 
-</div>
+          <div class="card-tag">GLOBAL LANGUAGE TEST</div>
 
-</section>
+          <div class="card-title">
+            雅思托福
+          </div>
 
-<!-- DASHBOARD -->
+          <div class="card-desc">
+            聚焦真实国际语言环境，
+            强化听说读写综合能力，
+            让英语真正成为你的世界通行证。
+          </div>
+        </div>
 
-<section id="dashboardPage"
-class="page flex-col px-6 py-12">
+        <div class="motivation-card"
+             data-path="vocabulary/abroad.html"
+             data-type="abroad">
 
-<div class="max-w-6xl mx-auto w-full">
+          <div class="card-tag">WORLD EXPLORATION</div>
 
-<div class="mb-14">
+          <div class="card-title">
+            出国旅游留学
+          </div>
 
-<h2 class="text-3xl md:text-5xl font-extralight mb-3">
-同步维度
-</h2>
+          <div class="card-desc">
+            为海外交流、旅行、生存与文化融入做准备，
+            让你拥有更自由的表达与探索能力。
+          </div>
+        </div>
 
-<p class="text-white/40">
-选择你的意识领域。
-</p>
+        <div class="motivation-card"
+             data-path="vocabulary/academic.html"
+             data-type="academic">
 
-</div>
+          <div class="card-tag">PROFESSIONAL & RESEARCH</div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div class="card-title">
+            学术专业
+          </div>
 
-<div class="glass card rounded-3xl p-8 category-card"
-data-category="daily">
+          <div class="card-desc">
+            深入专业领域英文资料，
+            建立学术阅读能力、
+            专业表达能力与国际研究视野。
+          </div>
+        </div>
 
-<p class="text-xs text-blue-300/60 mb-4 uppercase">
-Daily
-</p>
+      </div>
 
-<h3 class="text-2xl font-light mb-3">
-每日挑战
-</h3>
+    </section>
 
-<p class="text-white/40 text-sm leading-7">
-进入今日同步循环。
-</p>
+    <div class="bottom-quote">
+      “Language changes the scale of your future.”
+    </div>
 
-</div>
+  </main>
 
-<div class="glass card rounded-3xl p-8 category-card"
-data-category="ai">
+  <script>
 
-<p class="text-xs text-purple-300/60 mb-4 uppercase">
-AI & Future
-</p>
+    const title = "是什么让你来学习英语";
+    const titleContainer = document.getElementById("heroTitle");
 
-<h3 class="text-2xl font-light mb-3">
-AI 与未来
-</h3>
+    [...title].forEach((char,index)=>{
 
-<p class="text-white/40 text-sm leading-7">
-探索未来文明语言。
-</p>
+      const span = document.createElement("span");
 
-</div>
+      span.textContent = char;
+      span.style.animationDelay = `${index * 0.08}s`;
 
-<div class="glass card rounded-3xl p-8 category-card"
-data-category="psychology">
+      titleContainer.appendChild(span);
+    });
 
-<p class="text-xs text-cyan-300/60 mb-4 uppercase">
-Psychology
-</p>
+    const page = document.getElementById("page");
+    const skipBtn = document.getElementById("skipBtn");
 
-<h3 class="text-2xl font-light mb-3">
-心理学
-</h3>
+    function cinematicTransition(target){
 
-<p class="text-white/40 text-sm leading-7">
-理解情绪与意识。
-</p>
+      page.classList.add("transition-out");
 
-</div>
+      setTimeout(()=>{
+        window.location.href = target;
+      },900);
+    }
 
-<div class="glass card rounded-3xl p-8 category-card"
-data-category="travel">
+    skipBtn.addEventListener("click",()=>{
 
-<p class="text-xs text-orange-300/60 mb-4 uppercase">
-Travel
-</p>
+      cinematicTransition("motivation.html");
+    });
 
-<h3 class="text-2xl font-light mb-3">
-旅行英语
-</h3>
+    const cards = document.querySelectorAll(".motivation-card");
 
-<p class="text-white/40 text-sm leading-7">
-连接世界与未知。
-</p>
+    cards.forEach(card=>{
 
-</div>
+      card.addEventListener("mousemove",(e)=>{
 
-</div>
+        const rect = card.getBoundingClientRect();
 
-<button
-id="backHeroBtn"
-class="mt-14 text-white/30 hover:text-white transition">
-← 返回终端
-</button>
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-</div>
+        const rotateY = ((x / rect.width) - 0.5) * 10;
+        const rotateX = ((y / rect.height) - 0.5) * -10;
 
-</section>
+        card.style.transform = `
+          rotateX(${rotateX}deg)
+          rotateY(${rotateY}deg)
+          translateY(-10px)
+          scale(1.02)
+        `;
+      });
 
-<!-- GAME -->
+      card.addEventListener("mouseleave",()=>{
 
-<section id="gamePage"
-class="page flex-col px-6 py-10">
+        card.style.transform = "";
+      });
 
-<div class="max-w-5xl mx-auto w-full">
+      card.addEventListener("click",(e)=>{
 
-<div class="flex justify-between items-center mb-10">
+        const target = card.dataset.path;
+        const type = card.dataset.type;
 
-<div>
+        localStorage.setItem("zen1th_learning_goal", type);
 
-<p id="gameCategory"
-class="text-blue-300/70 uppercase text-xs tracking-[0.3em]">
-SYNC
-</p>
+        createRipple(e.clientX,e.clientY);
 
-<h2 class="text-3xl font-light mt-2">
-意识同步
-</h2>
+        setTimeout(()=>{
 
-</div>
+          cinematicTransition(target);
 
-<div class="text-right">
+        },250);
+      });
+    });
 
-<p class="text-white/30 text-xs mb-2">
-同步进度
-</p>
+    function createRipple(x,y){
 
-<div class="w-40 h-2 bg-white/10 rounded-full overflow-hidden">
+      const ripple = document.createElement("div");
 
-<div id="progressBar"
-class="h-full bg-blue-400 progress-glow rounded-full w-0 transition-all duration-500">
-</div>
+      ripple.className = "ripple";
 
-</div>
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
 
-</div>
+      document.body.appendChild(ripple);
 
-</div>
+      setTimeout(()=>{
+        ripple.remove();
+      },1000);
+    }
 
-<div id="gameGrid"
-class="grid grid-cols-2 md:grid-cols-4 gap-4">
-</div>
+    const Zen1thApp = {
 
-<button
-id="backDashboardBtn"
-class="mt-10 text-white/30 hover:text-white transition">
-← 返回维度
-</button>
+      version:"1.0.0",
 
-</div>
+      userPreference:{
+        learningGoal:null,
+      },
 
-</section>
+      init(){
+        this.userPreference.learningGoal =
+          localStorage.getItem("zen1th_learning_goal");
+      },
 
-<script>
+      futureAPI:{
+        login:null,
+        cloudSync:null,
+        aiAssistant:null,
+        vocabularyEngine:null,
+      }
+    };
 
-const database = {
+    Zen1thApp.init();
 
-daily:[
-{en:"Breakfast",cn:"早餐"},
-{en:"Journey",cn:"旅程"},
-{en:"Freedom",cn:"自由"},
-{en:"Memory",cn:"记忆"},
-{en:"Vision",cn:"愿景"},
-{en:"Balance",cn:"平衡"}
-],
-
-ai:[
-{en:"Algorithm",cn:"算法"},
-{en:"Quantum",cn:"量子的"},
-{en:"Neural",cn:"神经的"},
-{en:"Cybernetic",cn:"控制论的"},
-{en:"Synthetic",cn:"合成的"},
-{en:"Singularity",cn:"奇点"}
-],
-
-psychology:[
-{en:"Anxiety",cn:"焦虑"},
-{en:"Empathy",cn:"共情"},
-{en:"Subconscious",cn:"潜意识"},
-{en:"Emotion",cn:"情绪"},
-{en:"Perception",cn:"感知"},
-{en:"Trauma",cn:"创伤"}
-],
-
-travel:[
-{en:"Passport",cn:"护照"},
-{en:"Departure",cn:"出发"},
-{en:"Destination",cn:"目的地"},
-{en:"Luggage",cn:"行李"},
-{en:"Journey",cn:"旅行"},
-{en:"Transit",cn:"中转"}
-]
-
-};
-
-const heroPage = document.getElementById("heroPage");
-const dashboardPage = document.getElementById("dashboardPage");
-const gamePage = document.getElementById("gamePage");
-
-const gameGrid = document.getElementById("gameGrid");
-const progressBar = document.getElementById("progressBar");
-const gameCategory = document.getElementById("gameCategory");
-
-let selected = [];
-let matched = 0;
-
-function switchPage(page){
-
-heroPage.classList.remove("active");
-dashboardPage.classList.remove("active");
-gamePage.classList.remove("active");
-
-page.classList.add("active");
-
-}
-
-document.getElementById("enterBtn").addEventListener("click",()=>{
-
-switchPage(dashboardPage);
-
-});
-
-document.getElementById("dailyBtn").addEventListener("click",()=>{
-
-startGame("daily");
-
-});
-
-document.getElementById("backHeroBtn").addEventListener("click",()=>{
-
-switchPage(heroPage);
-
-});
-
-document.getElementById("backDashboardBtn").addEventListener("click",()=>{
-
-switchPage(dashboardPage);
-
-});
-
-document.querySelectorAll(".category-card").forEach(card=>{
-
-card.addEventListener("click",()=>{
-
-startGame(card.dataset.category);
-
-});
-
-});
-
-function startGame(category){
-
-switchPage(gamePage);
-
-gameCategory.innerText = category.toUpperCase();
-
-const words = database[category];
-
-let cards = [];
-
-words.forEach(word=>{
-
-cards.push({
-text:word.en,
-id:word.en
-});
-
-cards.push({
-text:word.cn,
-id:word.en
-});
-
-});
-
-cards.sort(()=>Math.random()-0.5);
-
-gameGrid.innerHTML = "";
-
-selected = [];
-matched = 0;
-
-updateProgress(words.length);
-
-cards.forEach(card=>{
-
-const div = document.createElement("div");
-
-div.className =
-"match-card glass rounded-3xl flex items-center justify-center text-center px-4 py-6 text-sm md:text-base";
-
-div.innerText = card.text;
-
-div.dataset.id = card.id;
-
-div.addEventListener("click",()=>{
-
-selectCard(div,words.length);
-
-});
-
-gameGrid.appendChild(div);
-
-});
-
-}
-
-function selectCard(el,total){
-
-if(selected.length >= 2) return;
-
-if(el.classList.contains("active")) return;
-
-if(el.classList.contains("correct")) return;
-
-el.classList.add("active");
-
-selected.push(el);
-
-if(selected.length === 2){
-
-if(selected[0].dataset.id === selected[1].dataset.id){
-
-setTimeout(()=>{
-
-selected.forEach(card=>{
-
-card.classList.remove("active");
-card.classList.add("correct");
-
-});
-
-matched++;
-
-updateProgress(total);
-
-selected = [];
-
-if(matched === total){
-
-setTimeout(()=>{
-
-switchPage(dashboardPage);
-
-},1000);
-
-}
-
-},300);
-
-}else{
-
-setTimeout(()=>{
-
-selected.forEach(card=>{
-
-card.classList.remove("active");
-card.classList.add("wrong");
-
-setTimeout(()=>{
-
-card.classList.remove("wrong");
-
-},300);
-
-});
-
-selected = [];
-
-},400);
-
-}
-
-}
-
-}
-
-function updateProgress(total){
-
-const percent = (matched / total) * 100;
-
-progressBar.style.width = percent + "%";
-
-}
-
-function createParticles(){
-
-const container = document.getElementById("particles");
-
-for(let i=0;i<70;i++){
-
-const p = document.createElement("div");
-
-p.className = "particle";
-
-p.style.left = Math.random()*100 + "vw";
-
-p.style.animationDuration =
-(10 + Math.random()*20) + "s";
-
-p.style.animationDelay =
-Math.random()*10 + "s";
-
-container.appendChild(p);
-
-}
-
-}
-
-createParticles();
-
-</script>
+  </script>
 
 </body>
 </html>
