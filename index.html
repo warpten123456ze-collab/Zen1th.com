@@ -1,602 +1,1791 @@
+<!--
+
+========================================================
+
+Zen1th - Cinematic English Learning System
+
+Single File Version
+
+直接保存为 index.html 即可运行
+
+========================================================
+
+-->
+
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <head>
+
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>Zen1th</title>
 
 <!-- Tailwind -->
+
 <script src="https://cdn.tailwindcss.com"></script>
 
 <!-- GSAP -->
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 
-<!-- Google Fonts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<!-- Three.js -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- Font -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
 :root{
-  --bg:#060816;
+
+  --bg:#04050b;
+
   --glass:rgba(255,255,255,.06);
-  --line:rgba(255,255,255,.08);
-  --text:#ffffff;
-  --muted:rgba(255,255,255,.62);
-  --blue:#7a8cff;
+
+  --border:rgba(255,255,255,.12);
+
+  --text:#f5f7ff;
+
+  --muted:#8f96ad;
+
+  --blue:#5da9ff;
+
+  --shadow:
+
+  0 10px 40px rgba(0,0,0,.35);
+
 }
 
 *{
+
   margin:0;
+
   padding:0;
+
   box-sizing:border-box;
+
 }
 
 body{
-  background:
-    radial-gradient(circle at top left,#10172c 0%,transparent 35%),
-    radial-gradient(circle at bottom right,#171036 0%,transparent 35%),
-    linear-gradient(135deg,#050816,#090b18,#050816);
 
-  color:white;
   overflow:hidden;
-  font-family:'Cormorant Garamond',serif;
-  height:100vh;
+
+  background:var(--bg);
+
+  color:var(--text);
+
+  font-family:
+
+  'Cormorant Garamond',
+
+  serif;
+
 }
 
-/* ===== 背景层 ===== */
+/* =========================================
 
-.bg-wrapper{
+GLOBAL
+
+========================================= */
+
+.page{
+
+  position:absolute;
+
+  inset:0;
+
+  opacity:0;
+
+  visibility:hidden;
+
+  transition:
+
+  opacity .9s ease,
+
+  transform 1.2s ease,
+
+  filter 1.2s ease;
+
+  transform:scale(1.02);
+
+  filter:blur(10px);
+
+}
+
+.page.active{
+
+  opacity:1;
+
+  visibility:visible;
+
+  transform:scale(1);
+
+  filter:blur(0);
+
+}
+
+/* =========================================
+
+BACKGROUND
+
+========================================= */
+
+#bgCanvas{
+
   position:fixed;
+
   inset:0;
+
   z-index:-10;
+
 }
 
-.bg-noise{
-  position:absolute;
-  inset:0;
+.bg-overlay{
 
-  opacity:.04;
+  position:fixed;
 
-  background-image:
-    radial-gradient(rgba(255,255,255,.15) 1px, transparent 1px);
-
-  background-size:3px 3px;
-}
-
-.vignette{
-  position:absolute;
   inset:0;
 
   background:
-    radial-gradient(circle at center,
-    transparent 20%,
-    rgba(0,0,0,.72));
+
+  radial-gradient(circle at top left,
+
+  rgba(80,120,255,.12),
+
+  transparent 30%),
+
+  radial-gradient(circle at bottom right,
+
+  rgba(0,180,255,.08),
+
+  transparent 30%),
+
+  linear-gradient(
+
+  135deg,
+
+  #03040a,
+
+  #050814,
+
+  #03050c
+
+  );
+
+  z-index:-9;
+
 }
+
+/* =========================================
+
+LIGHT
+
+========================================= */
 
 .light{
+
   position:absolute;
-  border-radius:50%;
-  filter:blur(120px);
-  opacity:.22;
-  animation:breathe 10s ease-in-out infinite;
+
+  width:600px;
+
+  height:600px;
+
+  border-radius:999px;
+
+  filter:blur(140px);
+
+  animation:
+
+  breathe 8s ease-in-out infinite;
+
 }
 
 .light-1{
-  width:500px;
-  height:500px;
-  background:#5f79ff;
-  top:-120px;
-  left:-120px;
+
+  background:rgba(73,120,255,.08);
+
+  top:-200px;
+
+  left:-200px;
+
 }
 
 .light-2{
-  width:700px;
-  height:700px;
-  background:#6d4dff;
-  right:-200px;
+
+  background:rgba(0,180,255,.06);
+
   bottom:-200px;
-  animation-delay:2s;
+
+  right:-200px;
+
 }
 
 @keyframes breathe{
+
   0%,100%{
+
     transform:scale(1);
+
+    opacity:.8;
+
   }
+
   50%{
+
     transform:scale(1.15);
+
+    opacity:1;
+
   }
+
 }
 
-/* ===== 页面 ===== */
+/* =========================================
 
-.page{
+GLASS
+
+========================================= */
+
+.glass{
+
+  background:var(--glass);
+
+  border:
+
+  1px solid var(--border);
+
+  backdrop-filter:
+
+  blur(18px);
+
+  box-shadow:
+
+  var(--shadow);
+
+}
+
+/* =========================================
+
+ENTRY PAGE
+
+========================================= */
+
+.hero{
+
   position:relative;
+
   width:100%;
+
   height:100vh;
 
   display:flex;
-  justify-content:center;
+
   align-items:center;
 
-  padding:60px;
+  justify-content:center;
+
+  padding:80px;
+
 }
 
-/* ===== Skip ===== */
+.hero-inner{
 
-.skip-btn{
-  position:fixed;
-  top:30px;
-  right:30px;
+  width:100%;
 
-  width:140px;
-  height:50px;
+  max-width:1400px;
 
-  border:none;
-  border-radius:999px;
-
-  background:rgba(255,255,255,.06);
-
-  backdrop-filter:blur(16px);
-
-  color:white;
-
-  letter-spacing:1px;
-
-  overflow:hidden;
-
-  cursor:pointer;
-
-  transition:.5s cubic-bezier(.19,1,.22,1);
-
-  z-index:100;
-}
-
-.skip-btn::before{
-  content:'';
-
-  position:absolute;
-  inset:0;
-
-  background:
-    radial-gradient(circle,
-    rgba(255,255,255,.25),
-    transparent 70%);
-
-  opacity:0;
-
-  transition:.5s;
-}
-
-.skip-btn:hover{
-  transform:translateY(-2px);
-  border:1px solid rgba(255,255,255,.18);
-
-  box-shadow:
-    0 0 30px rgba(255,255,255,.08),
-    inset 0 1px 0 rgba(255,255,255,.08);
-}
-
-.skip-btn:hover::before{
-  opacity:1;
-}
-
-/* ===== Hero ===== */
-
-.hero{
-  width:min(1500px,100%);
-}
-
-.hero-top{
-  margin-bottom:30px;
-}
-
-.hero-label{
-  font-size:14px;
-  letter-spacing:5px;
-  color:rgba(255,255,255,.45);
-  margin-bottom:20px;
 }
 
 .hero-title{
-  font-size:clamp(64px,8vw,140px);
 
-  line-height:.92;
+  font-size:82px;
 
   font-weight:700;
 
-  max-width:1200px;
+  line-height:1;
+
+  letter-spacing:1px;
+
+  margin-bottom:24px;
 
   background:
-    linear-gradient(to bottom,
-    #ffffff,
-    #cdd5ff,
-    #7a8cff);
+
+  linear-gradient(
+
+  90deg,
+
+  #ffffff,
+
+  #8ab4ff
+
+  );
 
   -webkit-background-clip:text;
+
   -webkit-text-fill-color:transparent;
 
   text-shadow:
-    0 10px 50px rgba(255,255,255,.12);
 
-  opacity:0;
+  0 0 30px rgba(255,255,255,.06);
+
 }
 
 .hero-desc{
-  margin-top:30px;
 
-  max-width:720px;
+  max-width:700px;
+
+  color:var(--muted);
 
   font-size:22px;
 
   line-height:1.8;
 
-  color:rgba(255,255,255,.6);
-
-  opacity:0;
 }
 
-/* ===== Cards ===== */
+/* =========================================
 
-.card-grid{
-  margin-top:90px;
+SKIP BUTTON
 
-  display:grid;
+========================================= */
 
-  grid-template-columns:repeat(12,1fr);
+.skip-btn{
 
-  gap:24px;
-}
+  position:fixed;
 
-.card{
-  position:relative;
+  top:30px;
+
+  right:30px;
+
+  z-index:100;
+
+  padding:14px 26px;
+
+  border-radius:999px;
+
+  border:1px solid rgba(255,255,255,.14);
+
+  backdrop-filter:blur(10px);
+
+  background:rgba(255,255,255,.04);
+
+  cursor:pointer;
 
   overflow:hidden;
 
-  min-height:180px;
+  transition:.4s;
 
-  background:rgba(255,255,255,.05);
+}
 
-  border:1px solid rgba(255,255,255,.08);
+.skip-btn:hover{
 
-  backdrop-filter:blur(18px);
+  transform:translateY(-2px);
 
-  border-radius:40px;
+  box-shadow:
 
-  padding:30px;
+  0 0 40px rgba(100,140,255,.15);
 
-  display:flex;
-  align-items:flex-end;
+}
+
+/* =========================================
+
+MOTIVE CARDS
+
+========================================= */
+
+.cards{
+
+  margin-top:70px;
+
+  display:grid;
+
+  grid-template-columns:
+
+  repeat(12,1fr);
+
+  gap:22px;
+
+}
+
+.card{
+
+  position:relative;
+
+  padding:32px;
+
+  min-height:170px;
+
+  overflow:hidden;
+
+  border-radius:
+
+  36px 18px 42px 24px;
 
   cursor:pointer;
 
   transition:
-    transform .6s cubic-bezier(.19,1,.22,1),
-    box-shadow .6s,
-    border .6s;
 
-  opacity:0;
-}
+  transform .45s ease,
 
-.card::before{
-  content:'';
+  box-shadow .45s ease;
 
-  position:absolute;
-  inset:0;
-
-  background:
-    radial-gradient(circle at top left,
-    rgba(122,140,255,.22),
-    transparent 45%);
-
-  opacity:.8;
-}
-
-.card::after{
-  content:'';
-
-  position:absolute;
-
-  width:200px;
-  height:200px;
-
-  background:
-    radial-gradient(circle,
-    rgba(255,255,255,.18),
-    transparent 70%);
-
-  top:-100px;
-  right:-100px;
-
-  transition:.6s;
 }
 
 .card:hover{
-  transform:
-    translateY(-10px)
-    rotateX(4deg)
-    rotateY(-4deg)
-    scale(1.02);
 
-  border:1px solid rgba(255,255,255,.18);
+  transform:
+
+  translateY(-10px)
+
+  rotate3d(1,1,0,4deg);
 
   box-shadow:
-    0 25px 80px rgba(0,0,0,.45),
-    0 0 40px rgba(122,140,255,.08);
+
+  0 25px 80px rgba(0,0,0,.45);
+
 }
 
-.card:hover::after{
-  transform:scale(1.4);
-}
+.card::before{
 
-.card span{
-  position:relative;
-  z-index:2;
+  content:"";
 
-  font-size:32px;
-  font-weight:600;
-
-  letter-spacing:1px;
-}
-
-.large{
-  grid-column:span 5;
-}
-
-.medium{
-  grid-column:span 4;
-}
-
-.wide{
-  grid-column:span 7;
-}
-
-.tall{
-  min-height:260px;
-}
-
-/* ===== 转场 ===== */
-
-.transition-overlay{
-  position:fixed;
-  inset:0;
-
-  background:#050816;
-
-  z-index:999;
-
-  opacity:0;
-  pointer-events:none;
-
-  backdrop-filter:blur(0px);
-}
-
-/* ===== Ripple ===== */
-
-.ripple{
   position:absolute;
 
-  width:20px;
-  height:20px;
+  inset:0;
 
-  border-radius:50%;
+  background:
 
-  background:rgba(255,255,255,.25);
+  linear-gradient(
 
-  transform:translate(-50%,-50%);
+  135deg,
 
-  animation:ripple .9s ease-out forwards;
+  rgba(255,255,255,.08),
+
+  transparent
+
+  );
+
+}
+
+.card h3{
+
+  font-size:36px;
+
+  margin-bottom:12px;
+
+}
+
+.card p{
+
+  color:var(--muted);
+
+  line-height:1.7;
+
+}
+
+.card-1{grid-column:span 4;}
+
+.card-2{grid-column:span 3;}
+
+.card-3{grid-column:span 5;}
+
+.card-4{grid-column:span 5;}
+
+.card-5{grid-column:span 7;}
+
+/* =========================================
+
+HOME
+
+========================================= */
+
+.home{
+
+  padding:80px;
+
+}
+
+.topbar{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin-bottom:50px;
+
+}
+
+.logo{
+
+  font-size:42px;
+
+  font-weight:700;
+
+  letter-spacing:2px;
+
+}
+
+.grid{
+
+  display:grid;
+
+  grid-template-columns:
+
+  repeat(12,1fr);
+
+  gap:24px;
+
+}
+
+.module{
+
+  position:relative;
+
+  overflow:hidden;
+
+  padding:34px;
+
+  border-radius:
+
+  34px 22px 46px 24px;
+
+  min-height:240px;
+
+  transition:.45s;
+
+}
+
+.module:hover{
+
+  transform:
+
+  translateY(-8px)
+
+  rotate3d(1,1,0,2deg);
+
+}
+
+.module::after{
+
+  content:"";
+
+  position:absolute;
+
+  width:240px;
+
+  height:240px;
+
+  border-radius:999px;
+
+  background:
+
+  rgba(120,150,255,.05);
+
+  right:-100px;
+
+  bottom:-100px;
+
+  filter:blur(40px);
+
+}
+
+.learn-module{
+
+  grid-column:span 7;
+
+}
+
+.wrong-module{
+
+  grid-column:span 5;
+
+}
+
+.stats-module{
+
+  grid-column:span 12;
+
+}
+
+.big-number{
+
+  font-size:120px;
+
+  font-weight:700;
+
+  line-height:1;
+
+  margin-top:20px;
+
+}
+
+.muted{
+
+  color:var(--muted);
+
+}
+
+/* =========================================
+
+BUTTON
+
+========================================= */
+
+.btn{
+
+  margin-top:30px;
+
+  padding:14px 26px;
+
+  border:none;
+
+  outline:none;
+
+  border-radius:999px;
+
+  background:
+
+  linear-gradient(
+
+  90deg,
+
+  #6ca8ff,
+
+  #88c6ff
+
+  );
+
+  color:#fff;
+
+  cursor:pointer;
+
+  transition:.35s;
+
+}
+
+.btn:hover{
+
+  transform:translateY(-2px);
+
+}
+
+/* =========================================
+
+GAME
+
+========================================= */
+
+.game{
+
+  padding:70px;
+
+}
+
+.game-grid{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:28px;
+
+  margin-top:50px;
+
+}
+
+.word-card{
+
+  position:relative;
+
+  padding:24px;
+
+  border-radius:
+
+  28px 18px 36px 22px;
+
+  cursor:pointer;
+
+  transition:.35s;
+
+}
+
+.word-card:hover{
+
+  transform:translateY(-4px);
+
+}
+
+.word{
+
+  font-size:32px;
+
+  font-weight:700;
+
+}
+
+.meaning{
+
+  font-size:22px;
+
+  color:var(--muted);
+
+}
+
+.correct{
+
+  border:
+
+  1px solid rgba(80,255,180,.4);
+
+}
+
+.wrong{
+
+  border:
+
+  1px solid rgba(255,80,100,.4);
+
+}
+
+/* =========================================
+
+RIPPLE
+
+========================================= */
+
+.ripple{
+
+  position:absolute;
+
+  border-radius:999px;
+
+  background:
+
+  rgba(255,255,255,.15);
+
+  transform:scale(0);
+
+  animation:
+
+  ripple .8s ease-out forwards;
+
 }
 
 @keyframes ripple{
 
-  0%{
-    width:0;
-    height:0;
-    opacity:.7;
+  to{
+
+    transform:scale(12);
+
+    opacity:0;
+
   }
 
-  100%{
-    width:1200px;
-    height:1200px;
-    opacity:0;
+}
+
+/* =========================================
+
+FOOTER
+
+========================================= */
+
+.footer{
+
+  position:fixed;
+
+  bottom:20px;
+
+  left:50%;
+
+  transform:translateX(-50%);
+
+  text-align:center;
+
+  color:var(--muted);
+
+  z-index:20;
+
+}
+
+.footer p{
+
+  margin-bottom:6px;
+
+}
+
+.footer a{
+
+  color:#9ec7ff;
+
+}
+
+/* =========================================
+
+RESPONSIVE
+
+========================================= */
+
+@media(max-width:1100px){
+
+  .hero-title{
+
+    font-size:58px;
+
   }
+
+  .cards{
+
+    grid-template-columns:1fr;
+
+  }
+
+  .card{
+
+    grid-column:span 1 !important;
+
+  }
+
+  .grid{
+
+    grid-template-columns:1fr;
+
+  }
+
+  .module{
+
+    grid-column:span 1 !important;
+
+  }
+
+  .game-grid{
+
+    grid-template-columns:1fr;
+
+  }
+
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="bg-wrapper">
-  <div class="bg-noise"></div>
-  <div class="vignette"></div>
-  <div class="light light-1"></div>
-  <div class="light light-2"></div>
-</div>
+<canvas id="bgCanvas"></canvas>
 
-<div class="transition-overlay" id="transition"></div>
+<div class="bg-overlay"></div>
 
-<button class="skip-btn" id="skipBtn">
-  Skip Intro
+<div class="light light-1"></div>
+
+<div class="light light-2"></div>
+
+<!-- =========================================
+
+ENTRY PAGE
+
+========================================= -->
+
+<section
+
+id="entryPage"
+
+class="page active hero">
+
+<button
+
+class="skip-btn"
+
+onclick="showPage('homePage')">
+
+跳过
+
 </button>
 
-<section class="page">
+<div class="hero-inner">
 
-  <div class="hero">
+<h1 class="hero-title">
 
-    <div class="hero-top">
+是什么让你来学习英语
 
-      <div class="hero-label">
-        REDEFINE YOUR WORLD THROUGH ENGLISH
-      </div>
+</h1>
 
-      <h1 class="hero-title" id="title">
-        是什么让你来学习英语
-      </h1>
+<p class="hero-desc">
 
-      <p class="hero-desc" id="desc">
-        用英语重新定义你的视野、野心与未来。
-        不是为了应付考试，而是为了拥有更大的世界。
-      </p>
+用英语看世界，不只是考试与分数。<br>
 
-    </div>
+它是你打开更大世界的钥匙。<br>
 
-    <div class="card-grid">
+Zen1th 希望你真正拥有理解世界的能力。
 
-      <div class="card medium" data-path="gaokao">
-        <span>高考学习</span>
-      </div>
+</p>
 
-      <div class="card large tall" data-path="cet">
-        <span>四六级 · 考研</span>
-      </div>
+<div class="cards">
 
-      <div class="card medium" data-path="ielts">
-        <span>雅思托福</span>
-      </div>
+<div
 
-      <div class="card wide" data-path="travel">
-        <span>出国 · 留学 · 旅行</span>
-      </div>
+class="card glass card-1"
 
-      <div class="card medium tall" data-path="academic">
-        <span>学术专业</span>
-      </div>
+onclick="selectDirection('gaokao')">
 
-    </div>
+<h3>高考学习</h3>
 
-  </div>
+<p>
+
+3500核心词汇强化记忆
+
+</p>
+
+</div>
+
+<div
+
+class="card glass card-2"
+
+onclick="selectDirection('cet')">
+
+<h3>四六级</h3>
+
+<p>
+
+大学英语与考研提升
+
+</p>
+
+</div>
+
+<div
+
+class="card glass card-3"
+
+onclick="selectDirection('ielts')">
+
+<h3>雅思托福</h3>
+
+<p>
+
+国际化学术英语体系
+
+</p>
+
+</div>
+
+<div
+
+class="card glass card-4"
+
+onclick="selectDirection('travel')">
+
+<h3>出国旅游</h3>
+
+<p>
+
+真实场景口语交流
+
+</p>
+
+</div>
+
+<div
+
+class="card glass card-5"
+
+onclick="selectDirection('academic')">
+
+<h3>学术专业</h3>
+
+<p>
+
+物理 医学 工程 计算机
+
+</p>
+
+</div>
+
+</div>
+
+</div>
 
 </section>
 
+<!-- =========================================
+
+HOME PAGE
+
+========================================= -->
+
+<section
+
+id="homePage"
+
+class="page home">
+
+<div class="topbar">
+
+<div class="logo">
+
+Zen1th
+
+</div>
+
+<div class="muted">
+
+Direction :
+
+<span id="currentDirection">
+
+IELTS
+
+</span>
+
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="module glass learn-module">
+
+<h2 class="text-5xl mb-5">
+
+即刻学习英语
+
+</h2>
+
+<p class="muted text-xl leading-9">
+
+开始单词配对乐训练系统，
+
+强化你的词汇反应能力与理解能力。
+
+</p>
+
+<button
+
+class="btn"
+
+onclick="startGame()">
+
+进入训练
+
+</button>
+
+</div>
+
+<div class="module glass wrong-module">
+
+<h2 class="text-4xl mb-5">
+
+错题本
+
+</h2>
+
+<p class="muted text-lg leading-8">
+
+在纠错中不断重塑自我。
+
+</p>
+
+<button
+
+class="btn"
+
+onclick="showWrongbook()">
+
+查看错题
+
+</button>
+
+</div>
+
+<div class="module glass stats-module">
+
+<div class="muted text-xl">
+
+已学单词
+
+</div>
+
+<div
+
+id="learnedCount"
+
+class="big-number">
+
+0
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================
+
+GAME PAGE
+
+========================================= -->
+
+<section
+
+id="gamePage"
+
+class="page game">
+
+<div class="topbar">
+
+<div class="logo">
+
+Word Match
+
+</div>
+
+<div id="roundText">
+
+Round 1 / 4
+
+</div>
+
+</div>
+
+<div
+
+id="gameGrid"
+
+class="game-grid">
+
+</div>
+
+</section>
+
+<!-- =========================================
+
+FOOTER
+
+========================================= -->
+
+<div class="footer">
+
+<p>
+
+您的回响 是Zen1th成长的基石
+
+</p>
+
+<a href="mailto:wjszzh888@163.com">
+
+wjszzh888@163.com
+
+</a>
+
+</div>
+
 <script>
 
-/* ===== GSAP 入场 ===== */
+/* =========================================
 
-gsap.to("#title",{
-  opacity:1,
-  y:0,
-  duration:1.6,
-  ease:"power4.out"
-})
+GLOBAL STATE
 
-gsap.to("#desc",{
-  opacity:1,
-  y:0,
-  delay:.4,
-  duration:1.4,
-  ease:"power4.out"
-})
+========================================= */
 
-gsap.to(".card",{
-  opacity:1,
-  y:0,
-  duration:1.2,
-  stagger:.12,
-  delay:.6,
-  ease:"power4.out"
-})
+let currentDirection = 'ielts'
 
-/* ===== 卡片点击 ===== */
+let learnedWords =
 
-const cards=document.querySelectorAll('.card')
-const overlay=document.getElementById('transition')
+Number(
 
-cards.forEach(card=>{
+localStorage.getItem(
 
-  card.addEventListener('click',(e)=>{
+'zen1th_learned'
 
-    /* 波纹 */
+)
 
-    const ripple=document.createElement('div')
-    ripple.classList.add('ripple')
+) || 0
 
-    ripple.style.left=e.clientX+'px'
-    ripple.style.top=e.clientY+'px'
+let wrongbook =
 
-    document.body.appendChild(ripple)
+JSON.parse(
 
-    setTimeout(()=>{
-      ripple.remove()
-    },900)
+localStorage.getItem(
 
-    /* 保存方向 */
+'zen1th_wrongbook'
 
-    const direction=card.dataset.path
+)
 
-    localStorage.setItem('zen1th_direction',direction)
+) || []
 
-    /* 转场 */
+document.getElementById(
 
-    gsap.to(overlay,{
-      opacity:1,
-      backdropFilter:'blur(20px)',
-      duration:1,
-      ease:'power3.inOut'
-    })
+'learnedCount'
 
-    gsap.to('body',{
-      scale:1.04,
-      filter:'blur(10px)',
-      duration:1,
-      ease:'power3.inOut'
-    })
+).innerText = learnedWords
 
-    /* 跳转 */
+/* =========================================
 
-    setTimeout(()=>{
+WORD LIBRARY
 
-      window.location.href=
-      `home.html?direction=${direction}`
+========================================= */
 
-    },1200)
+const WORDS = {
 
-  })
+ielts:[
 
-})
+{word:'analyze',meaning:'分析'},
 
-/* ===== Skip ===== */
+{word:'derive',meaning:'获得'},
 
-document.getElementById('skipBtn')
-.addEventListener('click',()=>{
+{word:'sustainable',meaning:'可持续的'},
 
-  gsap.to(overlay,{
-    opacity:1,
-    duration:.8
-  })
+{word:'phenomenon',meaning:'现象'},
 
-  gsap.to('body',{
-    scale:1.03,
-    filter:'blur(8px)',
-    duration:.8
+{word:'infrastructure',meaning:'基础设施'},
+
+{word:'accurate',meaning:'准确的'},
+
+{word:'decline',meaning:'下降'},
+
+{word:'emerge',meaning:'出现'},
+
+{word:'fundamental',meaning:'根本的'},
+
+{word:'globalization',meaning:'全球化'}
+
+],
+
+gaokao:[
+
+{word:'abandon',meaning:'放弃'},
+
+{word:'ability',meaning:'能力'},
+
+{word:'achieve',meaning:'实现'},
+
+{word:'ancient',meaning:'古老的'},
+
+{word:'benefit',meaning:'好处'},
+
+{word:'career',meaning:'事业'},
+
+{word:'debate',meaning:'辩论'},
+
+{word:'effort',meaning:'努力'},
+
+{word:'freedom',meaning:'自由'},
+
+{word:'gather',meaning:'聚集'}
+
+]
+
+}
+
+/* =========================================
+
+PAGE TRANSITION
+
+========================================= */
+
+function showPage(id){
+
+  document
+
+  .querySelectorAll('.page')
+
+  .forEach(page=>{
+
+    page.classList.remove('active')
+
   })
 
   setTimeout(()=>{
-    window.location.href='home.html'
-  },900)
+
+    document
+
+    .getElementById(id)
+
+    .classList.add('active')
+
+  },300)
+
+}
+
+/* =========================================
+
+SELECT DIRECTION
+
+========================================= */
+
+function selectDirection(direction){
+
+  currentDirection = direction
+
+  localStorage.setItem(
+
+    'zen1th_direction',
+
+    direction
+
+  )
+
+  document
+
+  .getElementById(
+
+    'currentDirection'
+
+  )
+
+  .innerText =
+
+  direction.toUpperCase()
+
+  showPage('homePage')
+
+}
+
+/* =========================================
+
+GAME LOGIC
+
+========================================= */
+
+let round = 1
+
+let score = 0
+
+function startGame(){
+
+  round = 1
+
+  score = 0
+
+  showPage('gamePage')
+
+  loadRound()
+
+}
+
+function loadRound(){
+
+  document
+
+  .getElementById(
+
+    'roundText'
+
+  )
+
+  .innerText =
+
+  `Round ${round} / 4`
+
+  const grid =
+
+  document.getElementById(
+
+    'gameGrid'
+
+  )
+
+  grid.innerHTML = ''
+
+  const pool =
+
+  [...WORDS[currentDirection]]
+
+  const selected =
+
+  pool.sort(()=>0.5-Math.random())
+
+  .slice(0,5)
+
+  selected.forEach(item=>{
+
+    const card =
+
+    document.createElement('div')
+
+    card.className =
+
+    'word-card glass'
+
+    card.innerHTML = `
+
+    <div class="word">
+
+    ${item.word}
+
+    </div>
+
+    <div class="meaning mt-3">
+
+    ${item.meaning}
+
+    </div>
+
+    `
+
+    card.onclick = (e)=>{
+
+      createRipple(e,card)
+
+      card.classList.add(
+
+        'correct'
+
+      )
+
+      navigator.vibrate?.(20)
+
+      score++
+
+      learnedWords++
+
+      localStorage.setItem(
+
+        'zen1th_learned',
+
+        learnedWords
+
+      )
+
+      document
+
+      .getElementById(
+
+        'learnedCount'
+
+      )
+
+      .innerText =
+
+      learnedWords
+
+      setTimeout(()=>{
+
+        card.remove()
+
+        if(
+
+          document
+
+          .querySelectorAll(
+
+          '.word-card'
+
+          ).length === 0
+
+        ){
+
+          round++
+
+          if(round <= 4){
+
+            loadRound()
+
+          }else{
+
+            finishGame()
+
+          }
+
+        }
+
+      },300)
+
+    }
+
+    grid.appendChild(card)
+
+  })
+
+}
+
+/* =========================================
+
+FINISH
+
+========================================= */
+
+function finishGame(){
+
+  alert(
+
+  `训练结束\n正确数:${score}`
+
+  )
+
+  showPage('homePage')
+
+}
+
+/* =========================================
+
+WRONGBOOK
+
+========================================= */
+
+function showWrongbook(){
+
+  alert(
+
+  `当前错题数量: ${wrongbook.length}`
+
+  )
+
+}
+
+/* =========================================
+
+RIPPLE
+
+========================================= */
+
+function createRipple(e,el){
+
+  const ripple =
+
+  document.createElement('span')
+
+  ripple.className =
+
+  'ripple'
+
+  ripple.style.left =
+
+  e.offsetX + 'px'
+
+  ripple.style.top =
+
+  e.offsetY + 'px'
+
+  el.appendChild(ripple)
+
+  setTimeout(()=>{
+
+    ripple.remove()
+
+  },800)
+
+}
+
+/* =========================================
+
+THREE.JS GLOBE
+
+========================================= */
+
+const scene =
+
+new THREE.Scene()
+
+const camera =
+
+new THREE.PerspectiveCamera(
+
+45,
+
+window.innerWidth /
+
+window.innerHeight,
+
+0.1,
+
+1000
+
+)
+
+const renderer =
+
+new THREE.WebGLRenderer({
+
+canvas:
+
+document.getElementById(
+
+'bgCanvas'
+
+),
+
+alpha:true,
+
+antialias:true
 
 })
 
-/* ===== 鼠标景深 ===== */
+renderer.setSize(
 
-document.addEventListener('mousemove',(e)=>{
+window.innerWidth,
 
-  const x=(window.innerWidth/2-e.clientX)/40
-  const y=(window.innerHeight/2-e.clientY)/40
+window.innerHeight
 
-  gsap.to('.hero',{
-    x:x,
-    y:y,
-    duration:1.6,
-    ease:'power3.out'
-  })
+)
+
+camera.position.z = 3
+
+const geometry =
+
+new THREE.SphereGeometry(
+
+1,
+
+64,
+
+64
+
+)
+
+const material =
+
+new THREE.MeshStandardMaterial({
+
+color:0x3d7fff,
+
+transparent:true,
+
+opacity:.4,
+
+wireframe:true
+
+})
+
+const globe =
+
+new THREE.Mesh(
+
+geometry,
+
+material
+
+)
+
+scene.add(globe)
+
+const light =
+
+new THREE.PointLight(
+
+0xffffff,
+
+2
+
+)
+
+light.position.set(
+
+3,
+
+3,
+
+3
+
+)
+
+scene.add(light)
+
+function animate(){
+
+  requestAnimationFrame(
+
+    animate
+
+  )
+
+  globe.rotation.y += 0.0015
+
+  renderer.render(
+
+    scene,
+
+    camera
+
+  )
+
+}
+
+animate()
+
+window.addEventListener(
+
+'resize',
+
+()=>{
+
+  camera.aspect =
+
+  window.innerWidth /
+
+  window.innerHeight
+
+  camera.updateProjectionMatrix()
+
+  renderer.setSize(
+
+    window.innerWidth,
+
+    window.innerHeight
+
+  )
+
+})
+
+/* =========================================
+
+ENTRY ANIMATION
+
+========================================= */
+
+gsap.from('.hero-title',{
+
+  y:60,
+
+  opacity:0,
+
+  duration:1.6,
+
+  ease:'power4.out'
+
+})
+
+gsap.from('.hero-desc',{
+
+  y:30,
+
+  opacity:0,
+
+  delay:.2,
+
+  duration:1.5
+
+})
+
+gsap.from('.card',{
+
+  y:80,
+
+  opacity:0,
+
+  stagger:.1,
+
+  delay:.4,
+
+  duration:1.4,
+
+  ease:'power4.out'
 
 })
 
 </script>
 
 </body>
+
 </html>
